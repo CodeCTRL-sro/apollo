@@ -34,7 +34,7 @@ class MailHelper {
                 $mail->isSMTP();
                 $mail->Host = $_ENV['MAIL_SMTP_HOST'];
                 $mail->SMTPAuth = true;
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->SMTPSecure = $_ENV['MAIL_SMTP_ENCRYPTION'] ?? PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = $_ENV['MAIL_SMTP_PORT'];
                 $mail->Username = $_ENV['MAIL_SMTP_USER'];
                 $mail->Password = $_ENV['MAIL_SMTP_PASSWORD'];
