@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Exception;
+use Gedmo\Mapping\Driver\AttributeReader;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Metapp\Apollo\Core\Config\Config;
@@ -77,6 +78,14 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
 
         $mappingDriver = new MappingDriverChain();
 
+        $gedmoPaths = [
+            dirname((new \ReflectionClass(\Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation::class))->getFileName()),
+            dirname((new \ReflectionClass(\Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry::class))->getFileName()),
+            dirname((new \ReflectionClass(\Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure::class))->getFileName()),
+        ];
+        $gedmoDriver = new AttributeDriver($gedmoPaths);
+        $mappingDriver->addDriver($gedmoDriver, 'Gedmo');
+
         $config->setMetadataDriverImpl($mappingDriver);
 
         $eventManager = new \Doctrine\Common\EventManager();
@@ -115,9 +124,18 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
             'translatable' => \Gedmo\Translatable\TranslatableListener::class,
         ];
 
+        $enabledListeners = $this->config->get('gedmoListeners', array_keys($gedmoListeners));
+        $disabledListeners = $this->config->get('disableGedmoListeners', []);
+
         foreach ($gedmoListeners as $type => $listenerClass) {
+            if (!in_array($type, $enabledListeners) || in_array($type, $disabledListeners)) {
+                continue;
+            }
+
             if (class_exists($listenerClass)) {
                 $listener = new $listenerClass();
+                $listener->setAnnotationReader(new AttributeReader());
+                $listener->setCacheItemPool($cache);
 
                 if ($type === 'translatable') {
                     $listener->setDefaultLocale($defaultLang);
