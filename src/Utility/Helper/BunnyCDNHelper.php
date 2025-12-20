@@ -75,13 +75,13 @@ class BunnyCDNHelper
      * @param bool $isChunkUpload
      * @return array
      */
-    public function storeAndUploadFile($file, $remoteFolder, $hash = null, bool $isChunkUpload = false): array
+    public function storeAndUploadFile($file, $remoteFolder, $tmpFolder, $hash = null, bool $isChunkUpload = false): array
     {
         if (!$hash) {
             $hash = StringUtils::generateRandomString();
         }
 
-        $tmpFilePath = $_SERVER["DOCUMENT_ROOT"] . '/storage/tmp/' . $hash . '.jpg';
+        $tmpFilePath = $tmpFolder . '/' . $hash . '.jpg';
         if (extension_loaded('imagick') && class_exists('Imagick')) {
             $manager = new ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());
             $saveTmpFile = $manager->read($file["tmp_name"]);
