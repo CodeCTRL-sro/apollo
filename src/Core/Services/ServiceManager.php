@@ -57,34 +57,47 @@ class ServiceManager implements ContainerInterface, ContainerAwareInterface
         }
     }
 
+    public function reset(string $alias): void
+    {
+        if (isset($this->cache[$alias])) {
+            unset($this->cache[$alias]);
+        }
+    }
+
+    public function getFresh(string $alias)
+    {
+        $this->reset($alias);
+        return $this->get($alias);
+    }
+
     /**
-     * @param string $alias
+     * @param string $id
      * @return mixed|null
      */
-    public function get($alias)
+    public function get($id)
     {
-        if (!$this->has($alias)) {
+        if (!$this->has($id)) {
             throw new NotFoundException(
-                sprintf('Alias (%s) is not an existing class and therefore cannot be resolved', $alias)
+                sprintf('Alias (%s) is not an existing class and therefore cannot be resolved', $id)
             );
         }
-        $factory = $this->container->get($this->factories[$alias]);
-        $obj = $this->_get($factory, $alias);
+        $factory = $this->container->get($this->factories[$id]);
+        $obj = $this->_get($factory, $id);
         if (!$obj) {
-            $obj = $this->_build($factory, $alias);
+            $obj = $this->_build($factory, $id);
         }
 
         return $obj;
     }
 
     /**
-     * @param string $alias
+     * @param string $id
      * @return bool
      */
-    public function has($alias)
+    public function has($id)
     {
-        if (array_key_exists($alias, $this->factories)) {
-            if ($this->container->has($this->factories[$alias])) {
+        if (array_key_exists($id, $this->factories)) {
+            if ($this->container->has($this->factories[$id])) {
                 return true;
             }
         }

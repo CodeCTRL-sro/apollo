@@ -22,7 +22,7 @@ class Language extends ApolloContainer
     protected $lang;
     protected $translate = array();
     protected $app_translate = array();
-    protected static $NAME;
+    protected static string $NAME;
     protected static $URLS = array();
     protected $request;
     protected string|null $app_language_version = null;

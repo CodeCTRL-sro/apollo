@@ -53,6 +53,9 @@ class ServiceProvider extends AbstractServiceProvider implements BootableService
 
         $serviceManager = new ServiceManager($this->getContainer());
         $serviceManager->configure($this->config->fromDimension('services'));
+
+        $container->addShared(ServiceManager::class, $serviceManager);
+
         $container->delegate($serviceManager);
 
         $container->delegate(new ReflectionContainer());
@@ -72,6 +75,7 @@ class ServiceProvider extends AbstractServiceProvider implements BootableService
             Config::class,
             LoggerInterface::class,
             ServerRequestInterface::class,
+            ServiceManager::class,
         ];
 
         return in_array($id, $services);

@@ -5,6 +5,7 @@ namespace Metapp\Apollo\Core;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Metapp\Apollo\Core\Config\Config;
+use Metapp\Apollo\Core\Services\ServiceManager;
 use Metapp\Apollo\Database\Redis\RedisClient;
 use Metapp\Apollo\Security\Auth\Auth;
 use Metapp\Apollo\Utility\Helper\Helper;
@@ -25,62 +26,69 @@ class ApolloContainer implements LoggerHelperInterface
     /**
      * @var
      */
-    protected static $NAME;
+    protected static string $NAME;
     /**
      * @var
      */
-    protected static $URL;
+    protected static string $URL;
 
     /**
      * @var array
      */
-    protected static $permissions = array();
+    protected static array $permissions = array();
     
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
     
     /**
      * @var \Twig\Environment
      */
-    protected $twig;
+    protected Environment $twig;
     
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected ?EntityManagerInterface $entityManager;
     
     /**
      * @var Auth
      */
-    protected $auth;
+    protected Auth $auth;
     
     /**
      * @var Helper
      */
-    protected $helper;
+    protected Helper $helper;
     
     /**
      * @var array
      */
-    private $hooks = array();
+    private array $hooks = array();
 
     /**
      * @var RedisClient|null
      */
-    protected $redis;
+    protected ?RedisClient $redis;
+
+    /**
+     * @var ServiceManager|null
+     */
+    protected ?ServiceManager $serviceManager;
 
     /**
      * ApolloContainer constructor.
      * @param Config $config
-     * @param \Twig\Environment $twig
-     * @param EntityManagerInterface|null $entityManager
+     * @param Environment $twig
      * @param Helper $helper
      * @param Auth $auth
+     * @param EntityManagerInterface|null $entityManager
      * @param LoggerInterface|null $logger
+     * @param \Redis|null $redisInstance
+     * @param ServiceManager|null $serviceManager
      */
-    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, EntityManagerInterface $entityManager = null, LoggerInterface $logger = null, \Redis $redisInstance = null)
+    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, EntityManagerInterface $entityManager = null, LoggerInterface $logger = null, \Redis $redisInstance = null, ServiceManager $serviceManager = null)
     {
         $this->config = $config->fromDimension(array('route','modules'));
         $this->twig = $twig;
@@ -88,6 +96,7 @@ class ApolloContainer implements LoggerHelperInterface
         $this->auth = $auth;
         $this->helper = $helper;
         $this->redis = new RedisClient($redisInstance, $logger);
+        $this->serviceManager = $serviceManager;
         $this->setLogDebug((bool)$this->config->get('debug', false));
         if ($logger) {
             $this->setLogger($logger);
@@ -98,6 +107,15 @@ class ApolloContainer implements LoggerHelperInterface
         } catch (\ReflectionException $e) {
             $this->error('ReflectionClass', array($e->getMessage()));
         }
+    }
+
+    protected function resetEntityManager(): ?EntityManagerInterface
+    {
+        if ($this->entityManager && !$this->entityManager->isOpen() && $this->serviceManager) {
+            $this->entityManager = $this->serviceManager->getFresh(EntityManagerInterface::class);
+            $this->info('EntityManager was reset due to closed state');
+        }
+        return $this->entityManager;
     }
 
     /**
@@ -238,8 +256,11 @@ class ApolloContainer implements LoggerHelperInterface
     /**
      * @return EntityManagerInterface
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManagerInterface
     {
+        if ($this->entityManager && !$this->entityManager->isOpen()) {
+            $this->resetEntityManager();
+        }
         return $this->entityManager;
     }
 
