@@ -412,7 +412,7 @@ class GenerateEntitiesFromDatabaseCommand extends AbstractEntityManagerCommand
             'datetime' => 'datetime',
             'date' => 'date',
             'time' => 'time',
-            'decimal' => 'decimal',
+            'decimal' => 'float',
             'float' => 'float',
             'boolean' => 'boolean',
         ];
@@ -434,7 +434,7 @@ class GenerateEntitiesFromDatabaseCommand extends AbstractEntityManagerCommand
             'datetime' => '\DateTime',
             'date' => '\DateTime',
             'time' => 'time',
-            'decimal' => 'decimal',
+            'decimal' => 'float',
             'float' => 'float',
             'boolean' => 'bool',
         ];
