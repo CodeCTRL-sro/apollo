@@ -54,15 +54,6 @@ class Language extends ApolloContainer
         foreach (array_diff(scandir($config->get(array('route','translator', 'path'), '')),array('.', '..')) as $lang) {
             $languages[] = str_replace(".php","",$lang);
         }
-        $params = $_GET;
-        if(isset($params["language"])){
-            if(in_array($params["request"],$languages)){
-                return $params["request"];
-            }
-            if(in_array($params["language"],$languages)){
-                return $params["language"];
-            }
-        }
 
         if(isset($_SERVER["HTTP_CONTENT_LANGUAGE"])){
             if(!empty($_SERVER["HTTP_CONTENT_LANGUAGE"])){
@@ -72,20 +63,40 @@ class Language extends ApolloContainer
             }
         }
 
+        $params = $_GET;
+        if(isset($params["language"])){
+            if(in_array($params["request"],$languages)){
+                return $params["request"];
+            }
+            if(in_array($params["language"],$languages)){
+                return $params["language"];
+            }
+        }
         if (array_key_exists('request', $params)) {
             $tmp = explode('/', $params['request']);
             $lng = array_shift($tmp);
+
+            if ($lng === 'admin' && !empty($tmp)) {
+                $lng = array_shift($tmp);
+            }
+
+            if (in_array($lng, $languages)) {
+                return $lng;
+            }
+
             if (strpos($params["request"], 'api/') === false) {
-                if(isset($_COOKIE["default_language"])){
+                if(isset($_COOKIE["default_language"]) && in_array($_COOKIE["default_language"], $languages)){
                     return $_COOKIE["default_language"];
                 }
             }
-            $headerLang = (isset($_SERVER["HTTP_CONTENT_LANGUAGE"]) ? $_SERVER["HTTP_CONTENT_LANGUAGE"] : $config->get(array('route','translator','default'), 'en'));
-            return in_array($lng, $languages) ? $lng : (!empty($headerLang) ? (in_array($headerLang,$languages) ? $headerLang : $config->get(array('route','translator','default'), 'en')) : $config->get(array('route','translator','default'), 'en'));
+
+            $headerLang = ($_SERVER["HTTP_CONTENT_LANGUAGE"] ?? $config->get(array('route', 'translator', 'default'), 'en'));
+            return !empty($headerLang) && in_array($headerLang, $languages) ? $headerLang : $config->get(array('route','translator','default'), 'en');
         } else {
             return $config->get(array('route','translator','default'), 'en');
         }
     }
+
 
     /**
      * @return string
