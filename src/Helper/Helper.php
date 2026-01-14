@@ -174,6 +174,14 @@ class Helper implements LoggerHelperInterface
 		return $this->basepath;
 	}
 
+    /**
+     * @return string
+     */
+    public function getAdminBasepath()
+    {
+        return '/admin/' . ($_COOKIE["default_language"] ?? 'hu');
+    }
+
 	/**
 	 * @param $url
 	 * @return string
