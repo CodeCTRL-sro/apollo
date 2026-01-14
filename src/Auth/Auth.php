@@ -40,6 +40,7 @@ class Auth
     public function validateJWT($token){
         try {
             $decodedData = JWT::decode($token, $this->config->get(array('jwt','key')), array('HS256'));
+
             if (is_object($decodedData)) {
                 $fetchData = $decodedData->data;
                 $table = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user'), 'Session:Users');
@@ -47,9 +48,12 @@ class Auth
                 $a = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user_auth_data'), 'email');
                 $data = $fetchData->{$a};
                 $getUser = $this->entityManager->getRepository($table)->findOneBy(array($where => $data));
-                if ($getUser) {
-                    return true;
-                }
+                if ($getUser && method_exists($getUser, 'setLastUserInteraction')) {
+					$getUser->setLastUserInteraction(date_create());
+					$this->entityManager->persist($getUser);
+					$this->entityManager->flush();
+					return true;
+				}
             }
         } catch (\Exception $e) {
         }

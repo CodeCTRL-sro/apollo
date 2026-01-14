@@ -115,6 +115,10 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
         $translatableListener->setAnnotationReader($annotationReader);
         $translatableListener->setCacheItemPool($cache);
         $translatableListener->setDefaultLocale($defaultLang);
+        $translatableListener->setTranslatableLocale($defaultLang);
+        $translatableListener->setTranslationFallback(true);
+        $translatableListener->setPersistDefaultLocaleTranslation(true);
+
         $eventManager->addEventSubscriber($translatableListener);
 
         $config->setMetadataDriverImpl($mappingDriver);

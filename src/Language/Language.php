@@ -16,7 +16,7 @@ use Twig\Environment;
 class Language extends ApolloContainer
 {
     protected $languages;
-    private $default_language;
+    protected $default_language;
     protected $lang;
     protected $translate = array();
     protected static $NAME;
@@ -28,7 +28,9 @@ class Language extends ApolloContainer
         $this->request = $request;
         $this->languages = array();
         foreach (array_diff(scandir($config->get(array('route', 'translator', 'path'), '')),array('.', '..')) as $lang) {
-            $this->languages[] = str_replace(".php","",$lang);
+            if (strpos($lang, '.php') !== false) {
+                $this->languages[] = str_replace(".php", "", $lang);
+            }
         }
         $this->default_language = $config->get(array('route', 'translator', 'default'), 'en');
         $this->lang = self::parseLang($config);
@@ -75,28 +77,27 @@ class Language extends ApolloContainer
         if (array_key_exists('request', $params)) {
             $tmp = explode('/', $params['request']);
             $lng = array_shift($tmp);
-
+            // Handle admin routes - language comes after 'admin/'
             if ($lng === 'admin' && !empty($tmp)) {
                 $lng = array_shift($tmp);
             }
-
+            // First check if URL has a valid language
             if (in_array($lng, $languages)) {
                 return $lng;
             }
-
+            // For non-API requests, fall back to cookie
             if (strpos($params["request"], 'api/') === false) {
                 if(isset($_COOKIE["default_language"]) && in_array($_COOKIE["default_language"], $languages)){
                     return $_COOKIE["default_language"];
                 }
             }
-
-            $headerLang = ($_SERVER["HTTP_CONTENT_LANGUAGE"] ?? $config->get(array('route', 'translator', 'default'), 'en'));
+            // Fall back to header or default
+            $headerLang = (isset($_SERVER["HTTP_CONTENT_LANGUAGE"]) ? $_SERVER["HTTP_CONTENT_LANGUAGE"] : $config->get(array('route','translator','default'), 'en'));
             return !empty($headerLang) && in_array($headerLang, $languages) ? $headerLang : $config->get(array('route','translator','default'), 'en');
         } else {
             return $config->get(array('route','translator','default'), 'en');
         }
     }
-
 
     /**
      * @return string
@@ -120,7 +121,11 @@ class Language extends ApolloContainer
         if (isset($this->translate[$lang][$key])) {
             $text = $this->translate[$lang][$key];
         }else{
-            $text = $this->translate[$this->default_language][$key];
+            if(isset($this->translate[$this->default_language][$key])) {
+                $text = $this->translate[$this->default_language][$key];
+            }else{
+                $text = '--{'.$key.'}--';
+            }
         }
         return $text;
     }
@@ -176,5 +181,25 @@ class Language extends ApolloContainer
     public function getLanguages()
     {
         return $this->languages;
+    }
+
+    /**
+     * Get URL with language prefix for admin routes
+     * @param string $path
+     * @return string
+     */
+    public function getAdminUrl($path)
+    {
+        return '/admin/' . $this->lang . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Get URL with language prefix for web routes
+     * @param string $path
+     * @return string
+     */
+    public function getLangUrl($path)
+    {
+        return '/' . $this->lang . '/' . ltrim($path, '/');
     }
 }

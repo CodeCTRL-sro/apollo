@@ -26,7 +26,7 @@ class Form extends \Laminas\Form\Form implements TranslatorAwareInterface, Trans
         }
         if (!$this->translator instanceof MvcTranslator) {
             $this->setTranslator(new MvcTranslator(Translator::factory(array(
-                    'locale' => $_COOKIE["default_language"],
+                    'locale' => $_COOKIE["default_language"] ?? 'hu',
                     'translation_file_patterns' => array(
                         array(
                             'type' => 'phparray',

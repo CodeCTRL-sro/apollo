@@ -73,14 +73,15 @@ class Html
      */
     public static function response(ResponseInterface $response)
     {
-        header('HTTP/'
-            . $response->getProtocolVersion() . ' '
-            . $response->getStatusCode() . ' '
-            . $response->getReasonPhrase());
-        foreach ($response->getHeaders() as $name => $values) {
-            header("{$name}: " . implode(', ', $values));
-        }
-
+		if(!headers_sent()){
+			header('HTTP/'
+				. $response->getProtocolVersion() . ' '
+				. $response->getStatusCode() . ' '
+				. $response->getReasonPhrase());
+			foreach ($response->getHeaders() as $name => $values) {
+				header("{$name}: " . implode(', ', $values));
+			}
+		}
         return $response->getBody();
     }
 

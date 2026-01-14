@@ -16,6 +16,9 @@ class Apollo
     /** @var array $configModules */
     private $configModules = array();
 
+    /** @var array $excludedConfigDirs */
+    private $excludedConfigDirs = array();
+
     /** @var bool $dynamicRouteLoad */
     private $dynamicRouteLoad = false;
 
@@ -68,6 +71,11 @@ class Apollo
     public function setDynamicRouteLoad($load = false)
     {
         $this->dynamicRouteLoad = $load;
+    }
+
+    public function setExcludedConfigDirs($dirs)
+    {
+        $this->excludedConfigDirs = $dirs;
     }
 
     /**
@@ -131,7 +139,7 @@ class Apollo
         Factory::setConfigPath($configPath);
         $configModules = $this->configModules;
         if(empty($configModules)){
-            $configModules = $this->buildRoutes(array_diff(scandir($configPath), array('.', '..','cli-config.php','translations')));
+            $configModules = $this->buildRoutes(array_diff(scandir($configPath), array_merge(array('.', '..','cli-config.php','translations'),$this->excludedConfigDirs)));
         }
         $this->config = Factory::fromNames($configModules, true);
     }

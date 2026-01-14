@@ -2,6 +2,7 @@
 
 namespace Metapp\Apollo\Route;
 
+use Laptapir\helpers\Utils;
 use Metapp\Apollo\Auth\Auth;
 use Metapp\Apollo\Helper\Helper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -256,12 +257,13 @@ class RouteValidator implements RouteValidatorInterface
                 $sessionRepository->removeExpired();
             }catch (\Exception $e){
             }
-            if (!empty($_SESSION['user'])) {
+            if (!empty($_SESSION[$this->config->get(array('route', 'modules', 'Session', 'session_key'), 'user')])) {
                 /** @var SessionEntity $session */
-                $session = $sessionRepository->findOneBy(array('userid' => $_SESSION['user'], 'sessionid' => session_id()));
+                $session = $sessionRepository->findOneBy(array($this->config->get(array('route', 'modules', 'Session', 'entity', 'session_key'), 'userid') => $_SESSION[$this->config->get(array('route', 'modules', 'Session', 'session_key'), 'user')], 'sessionid' => session_id()));
                 if ($session) {
+                    $getter = "get".ucfirst($this->config->get(array('route', 'modules', 'Session', 'entity', 'session_key'), 'userid'));
                     /** @var UsersEntity $sessionUser */
-                    $sessionUser = $session->getUserid();
+                    $sessionUser = $session->$getter();
                     if ($sessionUser) {
                         if ($this->password_match($sessionUser, $session)) {
                             $valid = true;
@@ -273,11 +275,11 @@ class RouteValidator implements RouteValidatorInterface
                 }
             }
             if (!$valid) {
-                unset($_SESSION['user']);
+                unset($_SESSION[$this->config->get(array('route', 'modules', 'Session', 'session_key'), 'user')]);
                 session_destroy();
             }
         }
-
+		
         if (!$valid) {
             throw new UnauthorizedException();
         }
