@@ -1,7 +1,7 @@
 <?php
-namespace Metapp\Apollo\Utility\Language;
+namespace CodeCTRL\Apollo\Utility\Language;
 
-use Metapp\Apollo\Core\Factory\Factory;
+use CodeCTRL\Apollo\Core\Factory\Factory;
 
 class TranslatableListener extends \Gedmo\Translatable\TranslatableListener
 {

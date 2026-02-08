@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Metapp\Apollo\Core;
+namespace CodeCTRL\Apollo\Core;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Core\Factory\Factory;
-use Metapp\Apollo\Core\Services\ServiceProvider;
-use Metapp\Apollo\Utility\Logger\ErrorLogger;
-use Metapp\Apollo\Utility\Logger\Logger;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Core\Factory\Factory;
+use CodeCTRL\Apollo\Core\Services\ServiceProvider;
+use CodeCTRL\Apollo\Utility\Logger\ErrorLogger;
+use CodeCTRL\Apollo\Utility\Logger\Logger;
 
 class Apollo
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Database\Doctrine;
+namespace CodeCTRL\Apollo\Database\Doctrine;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
@@ -15,13 +15,13 @@ use Exception;
 use Gedmo\Mapping\Driver\AttributeReader;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryInterface;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryTrait;
-use Metapp\Apollo\Core\Factory\Factory;
-use Metapp\Apollo\Core\Factory\InvokableFactoryInterface;
-use Metapp\Apollo\Utility\Language\Language;
-use Metapp\Apollo\Utility\Logger\Logger;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
+use CodeCTRL\Apollo\Core\Factory\Factory;
+use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
+use CodeCTRL\Apollo\Utility\Language\Language;
+use CodeCTRL\Apollo\Utility\Logger\Logger;
 use PDO;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -38,7 +38,7 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
     private $logger;
 
     /**
-     * @return \Metapp\Apollo\Database\Doctrine\EntityManager
+     * @return \CodeCTRL\Apollo\Database\Doctrine\EntityManager
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ORMException
@@ -273,7 +273,7 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
     }
 
     /**
-     * @param \Metapp\Apollo\Database\Doctrine\EntityManager $entityManager
+     * @param \CodeCTRL\Apollo\Database\Doctrine\EntityManager $entityManager
      * @throws \Doctrine\DBAL\Exception
      */
     private function addTypeMappings(EntityManager $entityManager): void

@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Metapp\Apollo\UI\Twig;
+namespace CodeCTRL\Apollo\UI\Twig;
 
-use Metapp\Apollo\Utility\Helper\Helper;
+use CodeCTRL\Apollo\Utility\Helper\Helper;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

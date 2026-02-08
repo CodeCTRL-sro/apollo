@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Core\Config;
+namespace CodeCTRL\Apollo\Core\Config;
 
 interface ConfigurableFactoryInterface
 {

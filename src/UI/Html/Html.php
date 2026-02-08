@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Html;
+namespace CodeCTRL\Apollo\UI\Html;
 
 use DOMDocument;
 use GuzzleHttp\Psr7\Header;

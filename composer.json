@@ -1,17 +1,17 @@
 {
-    "name": "metapphu/apollo",
+    "name": "codectrl-sro/apollo",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "role": "Author",
-            "name": "Metapp",
-            "email": "info@metapp.hu"
+            "name": "CodeCTRL",
+            "email": "info@codectrl.io"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Metapp\\Apollo\\": "src/"
+            "CodeCTRL\\Apollo\\": "src/"
         }
     },
     "require": {

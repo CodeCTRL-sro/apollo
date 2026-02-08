@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Form\Builder\Interfaces;
+namespace CodeCTRL\Apollo\UI\Form\Builder\Interfaces;
 
 interface FormBuilderInterface
 {

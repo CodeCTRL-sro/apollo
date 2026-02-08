@@ -1,9 +1,9 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Utils;
+namespace CodeCTRL\Apollo\Utility\Utils;
 
-use Metapp\Apollo\Utility\Utils\ArrayUtils\MergeRemoveKey;
-use Metapp\Apollo\Utility\Utils\ArrayUtils\MergeReplaceKeyInterface;
+use CodeCTRL\Apollo\Utility\Utils\ArrayUtils\MergeRemoveKey;
+use CodeCTRL\Apollo\Utility\Utils\ArrayUtils\MergeReplaceKeyInterface;
 
 class ArrayUtils
 {

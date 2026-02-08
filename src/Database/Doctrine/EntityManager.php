@@ -1,11 +1,11 @@
 <?php
-namespace Metapp\Apollo\Database\Doctrine;
+namespace CodeCTRL\Apollo\Database\Doctrine;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
-use Metapp\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
-use Metapp\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
+use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
+use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
 
 class EntityManager extends \Doctrine\ORM\EntityManager implements LoggerHelperInterface
 {

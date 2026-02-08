@@ -1,5 +1,5 @@
 <?php
-namespace Metapp\Apollo\Core\Factory;
+namespace CodeCTRL\Apollo\Core\Factory;
 
 interface InvokableFactoryInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Metapp\Apollo\Core\Config;
+namespace CodeCTRL\Apollo\Core\Config;
 
-use Metapp\Apollo\Utility\Utils\ArrayUtils;
+use CodeCTRL\Apollo\Utility\Utils\ArrayUtils;
 
 class Config
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Metapp\Apollo\UI\Twig\Interfaces;
+namespace CodeCTRL\Apollo\UI\Twig\Interfaces;
 
 use Twig\Environment;
 

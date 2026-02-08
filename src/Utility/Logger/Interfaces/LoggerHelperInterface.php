@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Metapp\Apollo\Utility\Logger\Interfaces;
+namespace CodeCTRL\Apollo\Utility\Logger\Interfaces;
 
 use Psr\Log\LoggerAwareInterface;
 

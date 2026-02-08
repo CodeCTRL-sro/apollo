@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Form\View\Helper;
+namespace CodeCTRL\Apollo\UI\Form\View\Helper;
 
 class FormCheckbox extends \Laminas\Form\View\Helper\FormCheckbox
 {

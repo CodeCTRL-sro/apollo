@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Database\Redis;
+namespace CodeCTRL\Apollo\Database\Redis;
 
 use Psr\Log\LoggerInterface;
 

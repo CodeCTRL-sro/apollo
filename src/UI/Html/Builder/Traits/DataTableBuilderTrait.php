@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Html\Builder\Traits;
+namespace CodeCTRL\Apollo\UI\Html\Builder\Traits;
 
 trait DataTableBuilderTrait
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Http\Route;
+namespace CodeCTRL\Apollo\Http\Route;
 
 use League\Container\Container;
 use League\Route\Route;

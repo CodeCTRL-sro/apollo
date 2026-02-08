@@ -1,9 +1,9 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Helper;
+namespace CodeCTRL\Apollo\Utility\Helper;
 
 use Intervention\Image\ImageManager;
-use Metapp\Apollo\Utility\Utils\StringUtils;
+use CodeCTRL\Apollo\Utility\Utils\StringUtils;
 
 class ImageHelper
 {

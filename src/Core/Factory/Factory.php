@@ -1,9 +1,9 @@
 <?php
 
-namespace Metapp\Apollo\Core\Factory;
+namespace CodeCTRL\Apollo\Core\Factory;
 
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Utility\Utils\ArrayUtils;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Utility\Utils\ArrayUtils;
 use RuntimeException;
 
 class Factory{

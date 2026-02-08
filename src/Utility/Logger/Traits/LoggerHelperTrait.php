@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Metapp\Apollo\Utility\Logger\Traits;
+namespace CodeCTRL\Apollo\Utility\Logger\Traits;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;

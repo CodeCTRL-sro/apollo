@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Html\Builder\Interfaces;
+namespace CodeCTRL\Apollo\UI\Html\Builder\Interfaces;
 
 interface DataTableBuilderInterface
 {

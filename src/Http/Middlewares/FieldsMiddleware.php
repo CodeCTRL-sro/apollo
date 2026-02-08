@@ -1,12 +1,12 @@
 <?php
 
-namespace Metapp\Apollo\Http\Middlewares;
+namespace CodeCTRL\Apollo\Http\Middlewares;
 
 use Doctrine\ORM\EntityManagerInterface;
 use League\Container\Container;
 use League\Route\Http\Exception\BadRequestException;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Security\Auth\Auth;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Security\Auth\Auth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

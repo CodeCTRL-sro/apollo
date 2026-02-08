@@ -1,8 +1,8 @@
 <?php
 
-namespace Metapp\Apollo\Security;
+namespace CodeCTRL\Apollo\Security;
 
-use Metapp\Apollo\UI\Form\Form;
+use CodeCTRL\Apollo\UI\Form\Form;
 
 class CSRF
 {

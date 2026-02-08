@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Metapp\Apollo\Core;
+namespace CodeCTRL\Apollo\Core;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Core\Services\ServiceManager;
-use Metapp\Apollo\Database\Redis\RedisClient;
-use Metapp\Apollo\Security\Auth\Auth;
-use Metapp\Apollo\Utility\Helper\Helper;
-use Metapp\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
-use Metapp\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Core\Services\ServiceManager;
+use CodeCTRL\Apollo\Database\Redis\RedisClient;
+use CodeCTRL\Apollo\Security\Auth\Auth;
+use CodeCTRL\Apollo\Utility\Helper\Helper;
+use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
+use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;

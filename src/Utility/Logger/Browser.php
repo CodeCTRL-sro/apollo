@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Logger;
+namespace CodeCTRL\Apollo\Utility\Logger;
 
 class Browser
 {

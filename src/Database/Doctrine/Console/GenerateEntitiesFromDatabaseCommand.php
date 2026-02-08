@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Database\Doctrine\Console;
+namespace CodeCTRL\Apollo\Database\Doctrine\Console;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Table;

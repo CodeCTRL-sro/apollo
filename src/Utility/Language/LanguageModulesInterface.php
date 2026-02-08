@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Language;
+namespace CodeCTRL\Apollo\Utility\Language;
 
 interface LanguageModulesInterface{
     /**

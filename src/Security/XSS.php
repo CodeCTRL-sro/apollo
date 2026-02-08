@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Security;
+namespace CodeCTRL\Apollo\Security;
 
 use voku\helper\AntiXSS;
 

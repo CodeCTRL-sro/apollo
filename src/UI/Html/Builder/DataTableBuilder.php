@@ -1,9 +1,9 @@
 <?php
 
-namespace Metapp\Apollo\UI\Html\Builder;
+namespace CodeCTRL\Apollo\UI\Html\Builder;
 
-use Metapp\Apollo\UI\Html\Builder\Interfaces\DataTableBuilderInterface;
-use Metapp\Apollo\UI\Html\Builder\Traits\DataTableBuilderTrait;
+use CodeCTRL\Apollo\UI\Html\Builder\Interfaces\DataTableBuilderInterface;
+use CodeCTRL\Apollo\UI\Html\Builder\Traits\DataTableBuilderTrait;
 
 class DataTableBuilder implements DataTableBuilderInterface
 {

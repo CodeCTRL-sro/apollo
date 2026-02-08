@@ -1,5 +1,5 @@
 <?php
-namespace Metapp\Apollo\UI\Form\Translator;
+namespace CodeCTRL\Apollo\UI\Form\Translator;
 
 use Laminas\Translator\TranslatorInterface;
 

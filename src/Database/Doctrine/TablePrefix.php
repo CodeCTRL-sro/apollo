@@ -1,5 +1,5 @@
 <?php
-namespace Metapp\Apollo\Database\Doctrine;
+namespace CodeCTRL\Apollo\Database\Doctrine;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;

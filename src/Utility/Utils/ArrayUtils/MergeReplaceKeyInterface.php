@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Utils\ArrayUtils;
+namespace CodeCTRL\Apollo\Utility\Utils\ArrayUtils;
 
 interface MergeReplaceKeyInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Utils;
+namespace CodeCTRL\Apollo\Utility\Utils;
 
 use Psr\Http\Message\ResponseInterface;
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Metapp\Apollo\UI\Twig\Traits;
+namespace CodeCTRL\Apollo\UI\Twig\Traits;
 
 use Twig\Environment;
 

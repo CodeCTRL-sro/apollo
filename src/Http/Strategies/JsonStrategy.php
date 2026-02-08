@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Http\Strategies;
+namespace CodeCTRL\Apollo\Http\Strategies;
 
 use Exception;
 use League\Route\Http\Exception as HttpException;
@@ -9,10 +9,10 @@ use League\Route\Http\Exception\NotFoundException;
 use League\Route\Http\Exception\UnauthorizedException;
 use League\Route\Route;
 use League\Route\Strategy\ApplicationStrategy;
-use Metapp\Apollo\Http\Route\Router;
-use Metapp\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
-use Metapp\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
-use Metapp\Apollo\Utility\Utils\APIResponseBuilder;
+use CodeCTRL\Apollo\Http\Route\Router;
+use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
+use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
+use CodeCTRL\Apollo\Utility\Utils\APIResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

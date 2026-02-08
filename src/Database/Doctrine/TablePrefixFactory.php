@@ -1,11 +1,11 @@
 <?php
-namespace Metapp\Apollo\Database\Doctrine;
+namespace CodeCTRL\Apollo\Database\Doctrine;
 
 use Exception;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryInterface;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryTrait;
-use Metapp\Apollo\Core\Factory\InvokableFactoryInterface;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
+use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
 
 class TablePrefixFactory implements InvokableFactoryInterface, ConfigurableFactoryInterface
 {

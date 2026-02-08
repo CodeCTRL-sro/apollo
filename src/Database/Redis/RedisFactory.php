@@ -1,11 +1,11 @@
 <?php
 
-namespace Metapp\Apollo\Database\Redis;
+namespace CodeCTRL\Apollo\Database\Redis;
 
-use Metapp\Apollo\Core\Config\ConfigurableFactoryInterface;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryTrait;
-use Metapp\Apollo\Core\Factory\InvokableFactoryInterface;
-use Metapp\Apollo\Utility\Logger\Logger;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
+use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
+use CodeCTRL\Apollo\Utility\Logger\Logger;
 use Psr\Log\LoggerInterface;
 
 class RedisFactory implements InvokableFactoryInterface, ConfigurableFactoryInterface

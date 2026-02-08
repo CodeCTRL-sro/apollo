@@ -1,13 +1,13 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Helper;
+namespace CodeCTRL\Apollo\Utility\Helper;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Security\Auth\Auth;
-use Metapp\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
-use Metapp\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Security\Auth\Auth;
+use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
+use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
 use Psr\Log\LoggerInterface;
 
 class Helper implements LoggerHelperInterface

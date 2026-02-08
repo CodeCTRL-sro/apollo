@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\UI\Form\Builder\Traits;
+namespace CodeCTRL\Apollo\UI\Form\Builder\Traits;
 
 trait FormBuilderTrait
 {

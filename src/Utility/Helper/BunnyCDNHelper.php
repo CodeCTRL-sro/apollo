@@ -1,11 +1,11 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Helper;
+namespace CodeCTRL\Apollo\Utility\Helper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Intervention\Image\ImageManager;
-use Metapp\Apollo\Utility\Utils\StringUtils;
+use CodeCTRL\Apollo\Utility\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 
 class BunnyCDNHelper

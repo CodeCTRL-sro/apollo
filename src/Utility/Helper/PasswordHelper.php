@@ -1,6 +1,6 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Helper;
+namespace CodeCTRL\Apollo\Utility\Helper;
 
 class PasswordHelper
 {

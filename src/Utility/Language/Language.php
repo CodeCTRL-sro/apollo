@@ -1,14 +1,14 @@
 <?php
 
-namespace Metapp\Apollo\Utility\Language;
+namespace CodeCTRL\Apollo\Utility\Language;
 
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Metapp\Apollo\Core\ApolloContainer;
-use Metapp\Apollo\Core\Config\Config;
-use Metapp\Apollo\Security\Auth\Auth;
-use Metapp\Apollo\Utility\Helper\Helper;
+use CodeCTRL\Apollo\Core\ApolloContainer;
+use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Security\Auth\Auth;
+use CodeCTRL\Apollo\Utility\Helper\Helper;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;

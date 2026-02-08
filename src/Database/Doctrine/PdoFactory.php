@@ -1,12 +1,12 @@
 <?php
-namespace Metapp\Apollo\Database\Doctrine;
+namespace CodeCTRL\Apollo\Database\Doctrine;
 
 
 use Exception;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryInterface;
-use Metapp\Apollo\Core\Config\ConfigurableFactoryTrait;
-use Metapp\Apollo\Core\Factory\InvokableFactoryInterface;
-use Metapp\Apollo\Utility\Logger\Logger;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
+use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
+use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
+use CodeCTRL\Apollo\Utility\Logger\Logger;
 use PDO;
 use PDOException;
 use Psr\Log\LoggerInterface;

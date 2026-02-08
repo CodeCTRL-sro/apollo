@@ -1,10 +1,10 @@
 <?php
-namespace Metapp\Apollo\Security\Auth;
+namespace CodeCTRL\Apollo\Security\Auth;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Metapp\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Core\Config\Config;
 
 class Auth
 {
