@@ -131,8 +131,8 @@ class DataTableBuilder implements DataTableBuilderInterface
             ),
         );
 
-        if (!empty($extraOptions)) {
-            foreach ($extraOptions as $optionKey => $optionValue) {
+        if (!empty($this->extraOptions)) {
+            foreach ($this->extraOptions as $optionKey => $optionValue) {
                 $dataTableOptions[$optionKey] = $optionValue;
             }
         }
