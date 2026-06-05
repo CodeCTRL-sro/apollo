@@ -9,6 +9,7 @@ use League\Container\ReflectionContainer;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Database\Doctrine\EntityManagerProvider;
 use CodeCTRL\Apollo\UI\Html\Html;
 use CodeCTRL\Apollo\Utility\Logger\Logger;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,6 +60,8 @@ class ServiceProvider extends AbstractServiceProvider implements BootableService
         $container->delegate($serviceManager);
 
         $container->delegate(new ReflectionContainer());
+
+        EntityManagerProvider::setContainer($container);
     }
 
     public function register() :void
