@@ -11,6 +11,7 @@ use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
 use CodeCTRL\Apollo\Utility\Logger\Logger;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\DebugExtension;
+use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 
 class TwigFactory implements InvokableFactoryInterface, ConfigurableFactoryInterface, ContainerAwareInterface
@@ -26,12 +27,16 @@ class TwigFactory implements InvokableFactoryInterface, ConfigurableFactoryInter
     {
         $logger = new Logger('TWIG');
 
-        if (null==$this->config) {
-            $logger->error('Factory', (array)" can't work without configuration");
-            throw new Exception(__CLASS__ . " can't work without configuration");
-        }
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $uriParts = explode("/", $requestUri);
+        $findUrlBasepath = $uriParts[1] ?? '';
 
-        $findUrlBasepath = explode("/", $_SERVER['REQUEST_URI'])[1];
+        // Without configuration Twig can still run "headless" (e.g. a JSON-only app
+        // that never renders a template) using an in-memory loader. This keeps the
+        // framework usable without a Twig/templates setup instead of hard-failing.
+        if (null == $this->config) {
+            return new Twig(new ArrayLoader(), array('autoescape' => false));
+        }
 
         $loader = new FilesystemLoader($this->config->get('templates_path', BASE_DIR . '/src/templates'));
         $paths = $this->config->get('paths', array());

@@ -44,13 +44,21 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
      * @throws ORMException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function __invoke(): EntityManager
+    public function __invoke(): ?EntityManager
     {
         $this->logger = new Logger('DOCTRINE');
 
         if (!($this->config instanceof Config)) {
-            $this->logger->error('Factory', [" can't work without configuration"]);
-            throw new Exception(__CLASS__ . " can't work without configuration");
+            // No Doctrine configuration at all → run without a database.
+            return null;
+        }
+
+        if (!$this->isDatabaseConfigured()) {
+            // No database credentials configured (e.g. empty .env) → run without a
+            // database instead of trying to connect and hard-failing. Consumers all
+            // accept a nullable EntityManager. If credentials ARE present but the
+            // connection later fails, that error is still surfaced below.
+            return null;
         }
 
         $this->preparePDO();
@@ -106,6 +114,35 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
         $this->addEventSubscribers($eventManager);
 
         return $entityManager;
+    }
+
+    /**
+     * Decide whether a database is actually configured. When it isn't (e.g. an app
+     * that runs without a database, or an empty .env), the factory returns null
+     * instead of attempting a connection. A connection is considered configured
+     * when explicit dbParams are provided, or when the shared `db` config carries
+     * a host / dbname / user.
+     *
+     * @return bool
+     */
+    private function isDatabaseConfigured(): bool
+    {
+        $dbParams = $this->config->get('dbParams');
+        if (is_array($dbParams) && !empty(array_filter($dbParams))) {
+            return true;
+        }
+
+        try {
+            $dbConfig = Factory::fromNames(['db'], true);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        $host = $dbConfig->get(['db', 'dsn', 'host']);
+        $dbname = $dbConfig->get(['db', 'dsn', 'dbname']);
+        $user = $dbConfig->get(['db', 'db_user']);
+
+        return !empty($host) || !empty($dbname) || !empty($user);
     }
 
     /**

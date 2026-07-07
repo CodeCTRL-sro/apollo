@@ -11,11 +11,13 @@ use League\Container\ServiceProvider\BootableServiceProviderInterface;
 use CodeCTRL\Apollo\Core\Config\Config;
 use CodeCTRL\Apollo\Database\Doctrine\EntityManagerProvider;
 use CodeCTRL\Apollo\UI\Html\Html;
+use CodeCTRL\Apollo\UI\Twig\TwigFactory;
 use CodeCTRL\Apollo\Utility\Logger\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Twig\Environment;
 
 class ServiceProvider extends AbstractServiceProvider implements BootableServiceProviderInterface, LoggerAwareInterface
 {
@@ -62,6 +64,25 @@ class ServiceProvider extends AbstractServiceProvider implements BootableService
         $container->delegate(new ReflectionContainer());
 
         EntityManagerProvider::setContainer($container);
+
+        // Guarantee a Twig environment is always resolvable. Several core services
+        // (strategies, the route validator, module containers) type-hint
+        // Twig\Environment in their constructor. Without an explicit binding the
+        // container would fall back to reflection and hard-fail (Twig\Environment
+        // needs a LoaderInterface it cannot autowire). Registering a lazy default
+        // lets the framework run headless (no templates configured). A project that
+        // registers its own Twig service still takes precedence.
+        if (!$serviceManager->has(Environment::class)) {
+            $container->addShared(Environment::class, function () use ($container) {
+                $factory = new TwigFactory();
+                $factory->setContainer($container);
+                $config = $container->get(Config::class);
+                if ($config->has('twig')) {
+                    $factory->configure($config->fromDimension('twig'));
+                }
+                return $factory();
+            });
+        }
     }
 
     public function register() :void

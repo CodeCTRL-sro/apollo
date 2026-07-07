@@ -50,6 +50,10 @@ class Auth
 	 */
 	public function validateJWT($token): bool
 	{
+		if ($this->entityManager === null) {
+			// Running without a database: no user store to validate against.
+			return false;
+		}
 		$table = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user'));
 		$where = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user_auth_key'), 'email');
 		$a = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user_auth_data'), 'email');
@@ -73,6 +77,10 @@ class Auth
 	 */
 	public function getUserByJWT($token): mixed
 	{
+		if ($this->entityManager === null) {
+			// Running without a database: no user store to resolve against.
+			return false;
+		}
 		$table = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user'));
 		$where = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user_auth_key'), 'email');
 		$a = $this->config->get(array('route', 'modules', 'Session', 'entity', 'user_auth_data'), 'email');

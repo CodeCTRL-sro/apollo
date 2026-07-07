@@ -26,7 +26,7 @@ class ApolloKernel implements LoggerHelperInterface
 
     private ContainerInterface $container;
 
-    private \Twig\Environment $twig;
+    private ?\Twig\Environment $twig = null;
 
     public function __construct(ContainerInterface $container)
     {
@@ -41,7 +41,16 @@ class ApolloKernel implements LoggerHelperInterface
         }
 
         $this->setLogDebug($config->get(array('route','debug'), false));
-        $twig = $this->container->get(Environment::class);
+        $twig = null;
+        try {
+            $resolved = $this->container->get(Environment::class);
+            if ($resolved instanceof Environment) {
+                $twig = $resolved;
+            }
+        } catch (\Throwable $e) {
+            // Twig is optional: a headless (e.g. JSON-only) app can run without it.
+            $this->error('Twig', array($e->getMessage()));
+        }
         $this->twig = $twig;
 
         if ($this->twig instanceof Environment) {
@@ -125,7 +134,9 @@ class ApolloKernel implements LoggerHelperInterface
                     );
                     /** @var Twig $twig */
                     $twig = $this->twig;
-                    $response->getBody()->write($twig->render('errors.html.twig', $params));
+                    if ($twig instanceof Environment) {
+                        $response->getBody()->write($twig->render('errors.html.twig', $params));
+                    }
                     ob_end_clean();
                     echo Html::response($response);
                     break;
