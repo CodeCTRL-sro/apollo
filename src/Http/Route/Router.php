@@ -13,6 +13,7 @@ use CodeCTRL\Apollo\Core\Config\Config;
 use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
 use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
 use CodeCTRL\Apollo\Security\Auth\Auth;
+use CodeCTRL\Apollo\Security\RedirectGuard;
 use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
 use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
 use Psr\Container\ContainerInterface;
@@ -277,6 +278,15 @@ class Router extends \League\Route\Router implements LoggerHelperInterface, Conf
     {
         $basepath = rtrim($this->getBasepath(), '/');
         return implode('/', array($basepath, ltrim($url, '/')));
+    }
+
+    /**
+     * @param array $deny
+     * @return string|null
+     */
+    public function getIntendedUrl(array $deny = array()): ?string
+    {
+        return RedirectGuard::fromRequest($this->getRequest(), $this->getBasepath(), $deny);
     }
 
 }

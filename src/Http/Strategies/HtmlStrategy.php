@@ -10,6 +10,7 @@ use League\Route\Http\Exception\UnauthorizedException;
 use League\Route\Route;
 use League\Route\Strategy\ApplicationStrategy;
 use CodeCTRL\Apollo\Http\Route\Router;
+use CodeCTRL\Apollo\Security\RedirectGuard;
 use CodeCTRL\Apollo\Utility\Logger\Interfaces\LoggerHelperInterface;
 use CodeCTRL\Apollo\Utility\Logger\Traits\LoggerHelperTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -114,8 +115,12 @@ class HtmlStrategy extends ApplicationStrategy implements LoggerHelperInterface
                 } catch (Exception $exception) {
                     $response = new \Laminas\Diactoros\Response;
                     if ($exception instanceof UnauthorizedException) {
-                        $response = $response->withHeader('Location', $this->strategy->getRouter()->getRealUrl($this->strategy->getRouter()->getNamedRoute('login')->getPath()));
-                        return $response;
+                        $router = $this->strategy->getRouter();
+                        $loginUrl = $router->getRealUrl($router->getNamedRoute('login')->getPath());
+                        $intended = $router->getIntendedUrl(array($loginUrl));
+                        return $response
+                            ->withStatus(302)
+                            ->withHeader('Location', RedirectGuard::appendTo($loginUrl, $intended));
                     }
                     if ($exception instanceof HttpException) {
                         $response = $response->withStatus($exception->getStatusCode());
