@@ -255,7 +255,10 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
         $redis = $factory->createInstance($this->logger);
 
         if (!$redis instanceof \Redis) {
-            throw new \RuntimeException('The Redis extension is not available.');
+            // RedisFactory returns null when the extension is missing, the DSN is unusable
+            // or the server is unreachable; it logs the specific cause. Surfacing it as an
+            // exception lets createCache() fall back to an ArrayAdapter.
+            throw new \RuntimeException('No usable Redis connection for the Doctrine cache.');
         }
 
         return $redis;

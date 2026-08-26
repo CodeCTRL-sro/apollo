@@ -4,6 +4,15 @@ namespace CodeCTRL\Apollo\Database\Redis;
 
 use Psr\Log\LoggerInterface;
 
+/**
+ * Thin, failure-tolerant wrapper over the \Redis connection.
+ *
+ * The client is deliberately usable without a connection: RedisFactory returns null when
+ * Redis is unreachable, and some containers hand their modules a RedisClient that wraps
+ * null. Every operation therefore degrades instead of throwing — reads report a miss,
+ * writes report failure, and remember() still runs its callback — so a Redis outage
+ * costs performance, never availability. Use isAvailable() when a caller needs to know.
+ */
 class RedisClient
 {
     /**
@@ -28,6 +37,17 @@ class RedisClient
     }
 
     /**
+     * Whether a Redis connection is present. False means every operation on this client
+     * is a no-op: reads miss, writes fail, remember() computes without caching.
+     *
+     * @return bool
+     */
+    public function isAvailable(): bool
+    {
+        return $this->redis instanceof \Redis;
+    }
+
+    /**
      * @param string $key
      * @return string
      */
@@ -44,6 +64,10 @@ class RedisClient
      */
     public function set(string $key, $value, ?int $ttl = null): bool
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         $ttl = $ttl ?? $this->defaultTtl;
         $value = is_array($value) ? json_encode($value) : $value;
 
@@ -62,6 +86,10 @@ class RedisClient
      */
     public function get(string $key, bool $asArray = true)
     {
+        if (!$this->isAvailable()) {
+            return null;
+        }
+
         try {
             $value = $this->redis->get($this->getKey($key));
 
@@ -81,6 +109,9 @@ class RedisClient
     }
 
     /**
+     * Returns the cached value, or computes it with $callback and caches it. Without a
+     * connection the callback still runs and its result is returned uncached.
+     *
      * @param string $key
      * @param callable $callback
      * @param int|null $ttl
@@ -106,6 +137,10 @@ class RedisClient
      */
     public function delete(string $key): bool
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             return (bool) $this->redis->del($this->getKey($key));
         } catch (\RedisException $e) {
@@ -120,6 +155,10 @@ class RedisClient
      */
     public function exists(string $key): bool
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             return (bool) $this->redis->exists($this->getKey($key));
         } catch (\RedisException $e) {
@@ -135,6 +174,10 @@ class RedisClient
      */
     public function increment(string $key, int $value = 1)
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             return $this->redis->incrBy($this->getKey($key), $value);
         } catch (\RedisException $e) {
@@ -150,6 +193,10 @@ class RedisClient
      */
     public function setMultiple(array $values, ?int $ttl = null): bool
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             $pipeline = $this->redis->pipeline();
             foreach ($values as $key => $value) {
@@ -171,6 +218,10 @@ class RedisClient
      */
     public function getMultiple(array $keys, bool $asArray = true): array
     {
+        if (!$this->isAvailable()) {
+            return [];
+        }
+
         try {
             $prefixedKeys = array_map([$this, 'getKey'], $keys);
             $values = $this->redis->mGet($prefixedKeys);
@@ -198,6 +249,10 @@ class RedisClient
      */
     public function clearByPattern(string $pattern): bool
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             $keys = $this->redis->keys($this->getKey($pattern));
             if (!empty($keys)) {
@@ -236,6 +291,10 @@ class RedisClient
      */
     public function getTtl(string $key)
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
         try {
             return $this->redis->ttl($this->getKey($key));
         } catch (\RedisException $e) {
