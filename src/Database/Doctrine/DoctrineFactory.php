@@ -20,12 +20,19 @@ use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryInterface;
 use CodeCTRL\Apollo\Core\Config\ConfigurableFactoryTrait;
 use CodeCTRL\Apollo\Core\Factory\Factory;
 use CodeCTRL\Apollo\Core\Factory\InvokableFactoryInterface;
+use CodeCTRL\Apollo\Database\Redis\RedisFactory;
 use CodeCTRL\Apollo\Utility\Language\Language;
 use CodeCTRL\Apollo\Utility\Logger\Logger;
 use PDO;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryInterface, ContainerAwareInterface
 {
@@ -68,7 +75,12 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
         $defaultLang = Language::parseLang($routeConfig);
         $paths = $this->config->get('paths', []);
 
-        $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+        // The cache pool is built up front and passed to ORMSetup explicitly, so the
+        // setup tool never falls back to its own auto-detection, which would blindly
+        // connect to APCu / Memcached / Redis on 127.0.0.1 whenever devMode is false.
+        $cache = $this->createCache($isDevMode);
+
+        $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode, null, $cache);
 
         $this->addFunctions($config);
         $this->setProxy($config);
@@ -81,8 +93,6 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
             $this->logger->error('Doctrine', [$e->getMessage()]);
             throw $e;
         }
-
-        $cache = new ArrayAdapter();
 
         $mappingDriver = new MappingDriverChain();
 
@@ -143,6 +153,125 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
         $user = $dbConfig->get(['db', 'db_user']);
 
         return !empty($host) || !empty($dbname) || !empty($user);
+    }
+
+    /**
+     * Build the PSR-6 cache pool used for the metadata / query / result caches and
+     * shared with the Gedmo listeners.
+     *
+     * In dev mode the pool is always an in-memory ArrayAdapter so mapping changes take
+     * effect immediately. Otherwise the adapter comes from the `cache` dimension of the
+     * Doctrine configuration:
+     *
+     *     'cache' => [
+     *         'adapter'   => 'redis',          // array (default) | redis | apcu | filesystem | php_files
+     *         'namespace' => 'apollo_doctrine',
+     *         'lifetime'  => 0,
+     *         'directory' => '/path/to/cache', // filesystem / php_files only
+     *         'redis'     => [                 // optional, see RedisFactory
+     *             'dsn' => 'redis://127.0.0.1:6379',
+     *             // or: 'host', 'port', 'timeout', 'password', 'database', 'options'
+     *         ],
+     *     ],
+     *
+     * The default stays ArrayAdapter so existing applications keep their behaviour, and
+     * a failing adapter degrades to an ArrayAdapter instead of taking the application
+     * down: a cache outage must not become a fatal error.
+     *
+     * @param bool $isDevMode
+     * @return CacheItemPoolInterface
+     */
+    private function createCache(bool $isDevMode): CacheItemPoolInterface
+    {
+        if ($isDevMode) {
+            return new ArrayAdapter();
+        }
+
+        $cacheConfig = $this->config->fromDimension('cache');
+        $adapter = mb_strtolower(trim((string)$cacheConfig->get('adapter', 'array')));
+        $namespace = (string)$cacheConfig->get('namespace', 'apollo_doctrine');
+        $lifetime = (int)$cacheConfig->get('lifetime', '0');
+
+        try {
+            return match ($adapter) {
+                '', 'array', 'memory' => new ArrayAdapter($lifetime),
+                'redis' => new RedisAdapter($this->createRedisClient($cacheConfig), $namespace, $lifetime),
+                'apcu' => new ApcuAdapter($namespace, $lifetime),
+                'filesystem', 'file' => new FilesystemAdapter($namespace, $lifetime, $this->getCacheDirectory($cacheConfig)),
+                'php_files', 'phpfiles' => new PhpFilesAdapter($namespace, $lifetime, $this->getCacheDirectory($cacheConfig)),
+                default => throw new \InvalidArgumentException(sprintf('Unknown Doctrine cache adapter "%s"', $adapter)),
+            };
+        } catch (\Throwable $e) {
+            $this->logger->error('Doctrine', [sprintf(
+                'Cache adapter "%s" is unavailable, falling back to ArrayAdapter: %s',
+                $adapter,
+                $e->getMessage()
+            )]);
+
+            return new ArrayAdapter();
+        }
+    }
+
+    /**
+     * Resolve the Redis client backing the Doctrine cache. An explicit DSN wins, then a
+     * client already registered in the container is reused (so the cache shares the
+     * application connection), then explicit `cache.redis` parameters, and finally the
+     * application wide `redis` configuration file.
+     *
+     * @param Config $cacheConfig
+     * @return \Redis|\RedisArray|\RedisCluster|object The client accepted by RedisAdapter
+     */
+    private function createRedisClient(Config $cacheConfig)
+    {
+        $redisConfig = (array)$cacheConfig->get('redis', []);
+
+        if (!empty($redisConfig['dsn'])) {
+            return RedisAdapter::createConnection($redisConfig['dsn']);
+        }
+
+        if (empty($redisConfig)
+            && $this->container instanceof ContainerInterface
+            && $this->container->has(\Redis::class)
+        ) {
+            return $this->container->get(\Redis::class);
+        }
+
+        if (empty($redisConfig)) {
+            try {
+                $redisConfig = (array)Factory::fromNames(['redis'], true)->get('redis', []);
+            } catch (\Throwable $e) {
+                $redisConfig = [];
+            }
+        }
+
+        if (empty($redisConfig)) {
+            throw new \RuntimeException(
+                'No Redis connection configured: set the doctrine `cache.redis` parameters, register a \Redis service or add a redis config.'
+            );
+        }
+
+        $factory = new RedisFactory();
+        $factory->configure(new Config($redisConfig));
+        $redis = $factory->createInstance($this->logger);
+
+        if (!$redis instanceof \Redis) {
+            throw new \RuntimeException('The Redis extension is not available.');
+        }
+
+        return $redis;
+    }
+
+    /**
+     * @param Config $cacheConfig
+     * @return string|null
+     */
+    private function getCacheDirectory(Config $cacheConfig): ?string
+    {
+        $directory = $cacheConfig->get('directory');
+
+        return empty($directory)
+            ? null
+            : rtrim((string)$directory, '/\\') . DIRECTORY_SEPARATOR;
     }
 
     /**

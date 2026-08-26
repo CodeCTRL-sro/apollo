@@ -13,7 +13,7 @@ class RedisFactory implements InvokableFactoryInterface, ConfigurableFactoryInte
     use ConfigurableFactoryTrait;
 
     /**
-     * @return \Redis
+     * @return \Redis|null
      */
     public function __invoke()
     {
@@ -30,15 +30,16 @@ class RedisFactory implements InvokableFactoryInterface, ConfigurableFactoryInte
 
     /**
      * @param LoggerInterface|null $logger
-     * @return \Redis
+     * @return \Redis|null
      */
     public function createInstance(LoggerInterface $logger = null)
     {
-        $host = $this->config->get('host', '127.0.0.1');
-        $port = $this->config->get('port', 6379);
-        $timeout = $this->config->get('timeout', 2.0);
+        $host = (string)$this->config->get('host', '127.0.0.1');
+        $port = (int)$this->config->get('port', '6379');
+        $timeout = (float)$this->config->get('timeout', '2.0');
         $password = $this->config->get('password');
-        $options = $this->config->get('options', array());
+        $database = $this->config->get('database');
+        $options = (array)$this->config->get('options', array());
 
         if (!class_exists('\Redis')) {
             if ($logger instanceof LoggerInterface) {
@@ -55,8 +56,8 @@ class RedisFactory implements InvokableFactoryInterface, ConfigurableFactoryInte
                 $redis->auth($password);
             }
 
-            if (isset($config['database'])) {
-                $redis->select($config['database']);
+            if (null !== $database) {
+                $redis->select((int)$database);
             }
 
             if(!empty($options)){
