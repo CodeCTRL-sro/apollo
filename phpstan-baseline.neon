@@ -1,0 +1,403 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^PHPDoc tag @var has invalid value \(\)\: Unexpected token "\\r\\n     ", expected type at offset 16 on line 2$#'
+			identifier: phpDoc.parseError
+			count: 2
+			path: src/Core/ApolloContainer.php
+
+		-
+			message: '#^Offset ''file'' on array\{type\: int, message\: string, file\: string, line\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Core/ApolloKernel.php
+
+		-
+			message: '#^Offset ''line'' on array\{type\: int, message\: string, file\: string, line\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Core/ApolloKernel.php
+
+		-
+			message: '#^Offset ''message'' on array\{type\: int, message\: string, file\: string, line\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Core/ApolloKernel.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\Core\\Services\\ServiceManager\:\:_get\(\) should return null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Core/Services/ServiceManager.php
+
+		-
+			message: '#^PHPDoc tag @var has invalid value \(\)\: Unexpected token "\\r\\n     ", expected type at offset 16 on line 2$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/Core/Services/ServiceManager.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\Database\\Doctrine\\DoctrineFactory\:\:__invoke\(\) should return CodeCTRL\\Apollo\\Database\\Doctrine\\EntityManager\|null but returns Doctrine\\ORM\\EntityManager\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Database/Doctrine/DoctrineFactory.php
+
+		-
+			message: '#^Parameter \#1 \$entityManager of method CodeCTRL\\Apollo\\Database\\Doctrine\\DoctrineFactory\:\:addTypeMappings\(\) expects CodeCTRL\\Apollo\\Database\\Doctrine\\EntityManager, Doctrine\\ORM\\EntityManager given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Database/Doctrine/DoctrineFactory.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\Database\\Doctrine\\EntityManager extends @final class Doctrine\\ORM\\EntityManager\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/Database/Doctrine/EntityManager.php
+
+		-
+			message: '#^Trait CodeCTRL\\Apollo\\Database\\Doctrine\\Traits\\EntityManagerAwareTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Database/Doctrine/Traits/EntityManagerAwareTrait.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\ORM\\EntityRepository\<object\>\:\:removeExpired\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Http/Middlewares/AuthMiddleware.php
+
+		-
+			message: '#^Offset ''options'' does not exist on array\{class\: class\-string, params\?\: array\<int, string\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Http/Middlewares/MiddlewareResolver.php
+
+		-
+			message: '#^Parameter \#3 \$container of class CodeCTRL\\Apollo\\Http\\Middlewares\\FieldsMiddleware constructor expects League\\Container\\Container, Psr\\Container\\ContainerInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Middlewares/MiddlewareResolver.php
+
+		-
+			message: '#^Variable \$twig might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/Http/Route/RouteFactory.php
+
+		-
+			message: '#^Method League\\Route\\Router\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/Http/Route/Router.php
+
+		-
+			message: '#^Parameter \#4 \$container of method CodeCTRL\\Apollo\\Http\\Route\\RouteValidatorInterface\:\:validate\(\) expects League\\Container\\Container, Psr\\Container\\ContainerInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Route/Router.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/UI/Form/Form.php
+
+		-
+			message: '#^Parameter \#1 \$translator of static method Laminas\\Validator\\AbstractValidator\:\:setDefaultTranslator\(\) expects Laminas\\Validator\\Translator\\TranslatorInterface\|null, Laminas\\Translator\\TranslatorInterface\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/UI/Form/Form.php
+
+		-
+			message: '#^Parameter \#2 \$textDomain of method CodeCTRL\\Apollo\\UI\\Form\\Form\:\:__\(\) expects null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/UI/Form/Form.php
+
+		-
+			message: '#^Parameter \#2 \$textDomain of method Laminas\\Translator\\TranslatorInterface\:\:translate\(\) expects string, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/UI/Form/Form.php
+
+		-
+			message: '#^Trait CodeCTRL\\Apollo\\UI\\Form\\Translator\\TranslatorLoaderTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/UI/Form/Translator/TranslatorLoaderTrait.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\Form extends @final class Laminas\\Form\\View\\Helper\\Form\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/Form.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormCheckbox extends @final class Laminas\\Form\\View\\Helper\\FormCheckbox\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormCheckbox.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormCollection extends @final class Laminas\\Form\\View\\Helper\\FormCollection\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormCollection.php
+
+		-
+			message: '#^Call to an undefined method CodeCTRL\\Apollo\\Core\\Factory\\Factory\:\:create\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/UI/Form/View/Helper/FormElement.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormElement extends @final class Laminas\\Form\\View\\Helper\\FormElement\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormElement.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormElementErrors extends @final class Laminas\\Form\\View\\Helper\\FormElementErrors\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormElementErrors.php
+
+		-
+			message: '#^Property CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormElementErrors\:\:\$messageCloseString overrides @final property Laminas\\Form\\View\\Helper\\FormElementErrors\:\:\$messageCloseString\.$#'
+			identifier: property.parentPropertyFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormElementErrors.php
+
+		-
+			message: '#^Property CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormElementErrors\:\:\$messageOpenFormat overrides @final property Laminas\\Form\\View\\Helper\\FormElementErrors\:\:\$messageOpenFormat\.$#'
+			identifier: property.parentPropertyFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormElementErrors.php
+
+		-
+			message: '#^Property CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormElementErrors\:\:\$messageSeparatorString overrides @final property Laminas\\Form\\View\\Helper\\FormElementErrors\:\:\$messageSeparatorString\.$#'
+			identifier: property.parentPropertyFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormElementErrors.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormEnd extends @final class Laminas\\Form\\View\\Helper\\Form\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormEnd.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormRow extends @final class Laminas\\Form\\View\\Helper\\FormRow\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormRow.php
+
+		-
+			message: '#^Property CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormRow\:\:\$inputErrorClass overrides @final property Laminas\\Form\\View\\Helper\\FormRow\:\:\$inputErrorClass\.$#'
+			identifier: property.parentPropertyFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormRow.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\UI\\Form\\View\\Helper\\FormStart extends @final class Laminas\\Form\\View\\Helper\\Form\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/UI/Form/View/Helper/FormStart.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:addToColumn\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setActionBtnsExtraOptions\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setActionBtnsTitle\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setAddActionBtns\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setColumns\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setFetchUrl\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setFilter\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setLanguage\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setLanguageUri\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setLengthChange\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setOrdering\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setPageLength\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\:\:setServerSide\(\) has invalid return type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait\.$#'
+			identifier: return.trait
+			count: 1
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^PHPDoc tag @return with type CodeCTRL\\Apollo\\UI\\Html\\Builder\\Traits\\DataTableBuilderTrait is incompatible with native type CodeCTRL\\Apollo\\UI\\Html\\Builder\\DataTableBuilder\.$#'
+			identifier: return.phpDocType
+			count: 13
+			path: src/UI/Html/Builder/DataTableBuilder.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between DOMDocument and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/UI/Html/Html.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: src/UI/Twig/TwigFactory.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Utility/Helper/RemoteAddressHelper.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Utility/Helper/RemoteAddressHelper.php
+
+		-
+			message: '#^Call to function class_exists\(\) with ''\\\\PhpOffice…'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Call to method getMessage\(\) on an unknown class PhpOffice\\PhpSpreadsheet\\Writer\\Exception\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Call to method save\(\) on an unknown class PhpOffice\\PhpSpreadsheet\\Writer\\Xlsx\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Caught class PhpOffice\\PhpSpreadsheet\\Writer\\Exception not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Instantiated class PhpOffice\\PhpSpreadsheet\\Writer\\Xlsx not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Method CodeCTRL\\Apollo\\Utility\\Language\\Language\:\:loadMultiModule\(\) should return CodeCTRL\\Apollo\\Utility\\Language\\Language but returns null\.$#'
+			identifier: return.type
+			count: 2
+			path: src/Utility/Language/Language.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\Utility\\Language\\TranslatableListener extends @final class Gedmo\\Translatable\\TranslatableListener\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/Utility/Language/TranslatableListener.php
+
+		-
+			message: '#^Loose comparison using \=\= between non\-empty\-string and '''' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: src/Utility/Logger/Browser.php
+
+		-
+			message: '#^Variable \$ub might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: src/Utility/Logger/Browser.php
+
+		-
+			message: '#^Parameter \#1 \$message of method CodeCTRL\\Apollo\\Utility\\Logger\\ErrorLogger\:\:error\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Utility/Logger/ErrorLogger.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/Utility/Logger/ErrorLogger.php
+
+		-
+			message: '#^Class CodeCTRL\\Apollo\\Utility\\Logger\\Logger extends @final class Monolog\\Logger\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: src/Utility/Logger/Logger.php
+
+		-
+			message: '#^PHPDoc tag @return with type CodeCTRL\\Apollo\\Utility\\Utils\\APIResponseBuilder is not subtype of native type static\(CodeCTRL\\Apollo\\Utility\\Utils\\APIResponseBuilder\)\.$#'
+			identifier: return.phpDocType
+			count: 2
+			path: src/Utility/Utils/APIResponseBuilder.php
+
+		-
+			message: '#^Parameter \#1 \$specs of method CodeCTRL\\Apollo\\Http\\Middlewares\\MiddlewareResolver\:\:resolve\(\) expects array\<int, string\>\|string, array\<int, CodeCTRL\\Apollo\\Tests\\Unit\\Http\\StubMiddleware\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Unit/Http/MiddlewareResolverTest.php
+
+		-
+			message: '#^Parameter \#1 \$specs of method CodeCTRL\\Apollo\\Http\\Middlewares\\MiddlewareResolver\:\:resolve\(\) expects array\<int, string\>\|string, array\<int, int\|string\|null\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Unit/Http/MiddlewareResolverTest.php

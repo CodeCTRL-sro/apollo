@@ -14,6 +14,11 @@
             "CodeCTRL\\Apollo\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "CodeCTRL\\Apollo\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=8.3",
         "ext-curl": "*",
@@ -26,15 +31,10 @@
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-reflection": "*",
-        "ext-simplexml": "*",
-        "ext-soap": "*",
-        "ext-gd": "*",
-        "ext-exif": "*",
-        "ext-redis": "*",
         "ext-fileinfo": "*",
         "doctrine/doctrine-module": "^6.3",
         "doctrine/orm": "^3.3",
-        "gedmo/doctrine-extensions": "3.19",
+        "gedmo/doctrine-extensions": "^3.19",
         "laminas/laminas-diactoros": "^3.5",
         "laminas/laminas-mvc-i18n": "^1.9",
         "laminas/laminas-i18n": "^2.29",
@@ -44,26 +44,67 @@
         "league/route": "^5.1",
         "monolog/monolog": "^3.8",
         "guzzlehttp/psr7": "^2.7",
-        "twig/twig": "^3.20",
-        "beberlei/doctrineextensions": "^1.5",
-        "firebase/php-jwt": "^6.11",
         "guzzlehttp/guzzle": "^7.9",
-        "cherif/inertia-psr15": "^0.4.0",
+        "twig/twig": "^3.20",
+        "firebase/php-jwt": "^7.1",
         "phpmailer/phpmailer": "^6.9",
-        "php-curl-class/php-curl-class": "^11.0",
-        "fullpipe/twig-webpack-extension": "^4.0",
         "voku/anti-xss": "^4.1",
         "symfony/cache": "^5.4",
-        "doctrine/cache": "^2.2",
         "intervention/image": "^3.6",
         "league/oauth2-client": "^2.9",
         "league/oauth2-google": "^4.1"
     },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5",
+        "friendsofphp/php-cs-fixer": "^3.68",
+        "rector/rector": "^2.0",
+        "filp/whoops": "^2.16"
+    },
+    "suggest": {
+        "ext-redis": "Required for the Redis cache client (CodeCTRL\\Apollo\\Database\\Redis) and the Redis backed Doctrine cache / rate limiter.",
+        "ext-gd": "Required by Intervention Image when using the GD driver.",
+        "ext-imagick": "Required by Intervention Image when using the Imagick driver (the default in ImageHelper).",
+        "ext-exif": "Allows EXIF based auto orientation of uploaded images.",
+        "ext-soap": "Only needed if your application talks to SOAP services.",
+        "ext-simplexml": "Only needed if your application parses XML with SimpleXML.",
+        "filp/whoops": "Pretty, interactive error page in debug mode (see CodeCTRL\\Apollo\\Utility\\Debug\\WhoopsRenderer).",
+        "doctrine/migrations": "Forward schema management instead of generating entities from an existing database.",
+        "cherif/inertia-psr15": "Inertia.js adapter, if your application renders Inertia responses.",
+        "beberlei/doctrineextensions": "Extra DQL functions; register them through the doctrine `functions` config dimension.",
+        "fullpipe/twig-webpack-extension": "Webpack asset helpers for Twig; register it through the twig `extensions` config dimension.",
+        "php-curl-class/php-curl-class": "Alternative HTTP client, if you prefer it over Guzzle in your application."
+    },
     "minimum-stability": "stable",
     "config": {
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
-    "require-dev": {
-        "phpstan/phpstan": "^2.1"
+    "scripts": {
+        "test": "phpunit --no-coverage",
+        "test:coverage": "phpunit --coverage-text",
+        "stan": "phpstan analyse --memory-limit=1G",
+        "stan:baseline": "phpstan analyse --memory-limit=1G --generate-baseline=phpstan-baseline.neon",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "rector": "rector process --dry-run",
+        "rector:fix": "rector process",
+        "ci": [
+            "@stan",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run the PHPUnit test suite.",
+        "test:coverage": "Run the test suite with a text coverage report.",
+        "stan": "Run PHPStan static analysis (existing findings are in phpstan-baseline.neon).",
+        "stan:baseline": "Regenerate the PHPStan baseline after fixing findings.",
+        "cs": "Report coding standard violations without changing files. Not yet applied to the codebase.",
+        "cs:fix": "Apply coding standard fixes. Expect a large one-off diff the first time.",
+        "rector": "Report automated refactorings without changing files. Not yet applied.",
+        "rector:fix": "Apply automated refactorings. Expect a large one-off diff the first time.",
+        "ci": "The blocking check suite: static analysis and tests."
     }
 }

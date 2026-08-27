@@ -1,3 +1,9 @@
 /vendor/
 .idea
-.composer.lock
+.env
+.env.local
+/logs/
+/var/
+.phpunit.cache
+.phpunit.result.cache
+.php-cs-fixer.cache
