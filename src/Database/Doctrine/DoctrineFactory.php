@@ -489,11 +489,28 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
      */
     private function getEventListenerObject(string $class): mixed
     {
+        return $this->resolveOrInstantiate($class, 'Doctrine:eventListeners');
+    }
+
+    /**
+     * Resolve a class from the container, falling back to constructing it directly.
+     *
+     * getEventListenerObject() and getEventSubscriberObject() were character for
+     * character identical apart from the log channel, so both now delegate here.
+     *
+     * @param string $class
+     * @param string $channel
+     * @return object
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function resolveOrInstantiate(string $class, string $channel): object
+    {
         if ($this->container->has($class)) {
             try {
                 return $this->container->get($class);
             } catch (Exception $e) {
-                $this->logger->error('Doctrine:eventListeners', ['class' => $class, 'e' => $e->getMessage()]);
+                $this->logger->error($channel, ['class' => $class, 'e' => $e->getMessage()]);
                 throw $e;
             }
         }
@@ -502,12 +519,12 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
             try {
                 return new $class();
             } catch (Exception $e) {
-                $this->logger->error('Doctrine:eventListeners', ['class' => $class, 'e' => $e->getMessage()]);
+                $this->logger->error($channel, ['class' => $class, 'e' => $e->getMessage()]);
                 throw $e;
             }
         }
 
-        $this->logger->error('Doctrine:eventListeners', ['class' => $class, 'e' => 'not exists']);
+        $this->logger->error($channel, ['class' => $class, 'e' => 'not exists']);
         throw new Exception("{$class} not exists");
     }
 
@@ -544,25 +561,6 @@ class DoctrineFactory implements InvokableFactoryInterface, ConfigurableFactoryI
      */
     private function getEventSubscriberObject(string $class): mixed
     {
-        if ($this->container->has($class)) {
-            try {
-                return $this->container->get($class);
-            } catch (Exception $e) {
-                $this->logger->error('Doctrine:eventSubscribers', ['class' => $class, 'e' => $e->getMessage()]);
-                throw $e;
-            }
-        }
-
-        if (class_exists($class)) {
-            try {
-                return new $class();
-            } catch (Exception $e) {
-                $this->logger->error('Doctrine:eventSubscribers', ['class' => $class, 'e' => $e->getMessage()]);
-                throw $e;
-            }
-        }
-
-        $this->logger->error('Doctrine:eventSubscribers', ['class' => $class, 'e' => 'not exists']);
-        throw new Exception("{$class} not exists");
+        return $this->resolveOrInstantiate($class, 'Doctrine:eventSubscribers');
     }
 }

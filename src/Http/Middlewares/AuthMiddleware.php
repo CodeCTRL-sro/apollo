@@ -68,7 +68,9 @@ class AuthMiddleware implements MiddlewareInterface
 					if ($this->auth->validateJWT($jwt)) {
 						$valid = true;
 					} else {
-                        setcookie('auth_token', null, time() - 3600, secure: true, httponly: true);
+                        // '' rather than null: passing null to a string parameter has
+                        // been deprecated since PHP 8.1.
+                        setcookie('auth_token', '', time() - 3600, secure: true, httponly: true);
 					}
 				}
 			}

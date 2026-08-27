@@ -20,7 +20,20 @@ class Twig extends Environment implements LoggerHelperInterface
         try {
             $page = parent::render($name, $context);
         } catch (Error $e) {
-            $this->error('Twig_Error', (array)$e);
+            $this->error('Twig_Error', array(
+                'template' => is_string($name) ? $name : get_debug_type($name),
+                'message' => $e->getMessage(),
+                'line' => $e->getTemplateLine(),
+            ));
+
+            // Swallowing the error and returning '' turns a broken template into a
+            // blank page with nothing on screen to explain it. In debug mode the
+            // exception is rethrown so the error page can show what actually failed;
+            // production keeps the previous forgiving behaviour.
+            if ($this->log_debug) {
+                throw $e;
+            }
+
             $page = '';
         }
         return $page;

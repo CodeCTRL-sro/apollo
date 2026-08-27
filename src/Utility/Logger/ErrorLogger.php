@@ -57,11 +57,18 @@ class ErrorLogger implements LoggerHelperInterface
     }
 
     /**
-     *
+     * @deprecated 3.3.0 Never registered anywhere, and it read $error['type'] without
+     *             checking that error_get_last() returned anything — so calling it on a
+     *             clean shutdown raised a warning of its own. ApolloKernel::_fatal_handler()
+     *             is the handler that actually runs. Removed in 4.0.
      */
     public function myShutdownFunction()
     {
         $error = error_get_last();
+
+        if (!isset($error['type'])) {
+            return;
+        }
 
         switch ($error['type']) {
             case E_ERROR:

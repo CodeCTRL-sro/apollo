@@ -128,9 +128,16 @@ class Config
     private function _set(array $keys, array|string|bool $value = null): void
     {
         $cfg = &$this->config;
-        foreach ($keys as $key) {
-            if (!array_key_exists($key, $cfg)) {
-                $cfg[$key] = null;
+        $last = array_key_last($keys);
+        foreach ($keys as $index => $key) {
+            // Intermediate levels have to become arrays, not null: descending into a
+            // null and then calling array_key_exists() on it is a TypeError, so setting
+            // a path whose parents did not exist yet used to fail outright.
+            if (!is_array($cfg)) {
+                $cfg = array();
+            }
+            if (!array_key_exists($key, $cfg) || (!is_array($cfg[$key]) && $index !== $last)) {
+                $cfg[$key] = $index === $last ? null : array();
             }
             $cfg = &$cfg[$key];
         }
