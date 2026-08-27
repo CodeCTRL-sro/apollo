@@ -8,42 +8,53 @@ use GuzzleHttp\Psr7\ServerRequest;
 use CodeCTRL\Apollo\Core\Config\Config;
 use CodeCTRL\Apollo\Core\Factory\Factory;
 use CodeCTRL\Apollo\Core\Services\ServiceProvider;
+use CodeCTRL\Apollo\Security\SessionGuard;
 use CodeCTRL\Apollo\Utility\Logger\ErrorLogger;
 use CodeCTRL\Apollo\Utility\Logger\Logger;
 
 class Apollo
 {
-    /** @var array $configModules */
-    private $configModules = array();
+    /** @var array<int, string> */
+    private array $configModules = array();
 
-    /** @var array $excludedConfigDirs */
-    private $excludedConfigDirs = array();
+    /** @var array<int, string> */
+    private array $excludedConfigDirs = array();
 
-    /** @var bool $dynamicRouteLoad */
-    private $dynamicRouteLoad = false;
+    private bool $dynamicRouteLoad = false;
 
-    /** @var $config */
-    private $config;
+    private ?Config $config = null;
 
-    /** @var $container */
-    private $container;
+    private ?\League\Container\Container $container = null;
 
-    /** @var string $baseDir */
-    private $baseDir;
+    private string $baseDir = '';
 
-    /** @var string $homeDir */
-    private $homeDir = "";
+    private string $homeDir = "";
 
-    /** @var int $maxLoggerFiles */
-    private $maxLoggerFiles = 7;
+    private int $maxLoggerFiles = 7;
 
-    /** @var bool $allowErrorReporting */
-    private $allowErrorReporting = false;
+    private bool $allowErrorReporting = false;
 
     private function initErrorHandler()
     {
         $error_logger = new ErrorLogger(new Logger('PHP', $this->maxLoggerFiles));
         set_error_handler(array($error_logger, 'customErrorHandler'));
+    }
+
+    /**
+     * Apply session cookie hardening before anything can start a session.
+     *
+     * Opt out with `'session' => array('harden' => false)` in the route config if the
+     * application configures php.ini itself.
+     */
+    private function initSession(): void
+    {
+        $sessionConfig = (array)$this->config->get(array('route', 'session'), array());
+
+        if (($sessionConfig['harden'] ?? true) === false) {
+            return;
+        }
+
+        SessionGuard::harden($sessionConfig);
     }
 
     private function initContainers(Config $config)
@@ -155,6 +166,7 @@ class Apollo
         }
         $this->initConfigs();
         $this->initErrorHandler();
+        $this->initSession();
         $modules_config = $this->config->get(array('route', 'modules'));
         foreach ($modules_config as $module) {
             if (is_array($module) && !empty($module['paths'])) {

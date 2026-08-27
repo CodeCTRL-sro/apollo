@@ -9,6 +9,38 @@ class RemoteAddressHelper
     protected string $proxyHeader = 'HTTP_X_FORWARDED_FOR';
 
     /**
+     * Build a helper from the `routing` config dimension.
+     *
+     * Proxy headers are only honoured when trusted_proxies is non-empty: X-Forwarded-For
+     * is client-supplied, so trusting it unconditionally lets anyone claim any address —
+     * which defeats IP based rate limiting and poisons audit logs. Symfony's
+     * framework.trusted_proxies makes the same requirement.
+     *
+     *     'routing' => array(
+     *         'trusted_proxies' => array('10.0.0.1', '10.0.0.2'),
+     *         'proxy_header'    => 'X-Forwarded-For',
+     *     ),
+     *
+     * @param array<string, mixed> $options
+     * @return static
+     */
+    public static function fromOptions(array $options): static
+    {
+        $helper = new static();
+
+        $proxies = array_values(array_filter(array_map('trim', (array)($options['trusted_proxies'] ?? array()))));
+        if (!empty($proxies)) {
+            $helper->setUseProxy(true)->setTrustedProxies($proxies);
+        }
+
+        if (!empty($options['proxy_header'])) {
+            $helper->setProxyHeader((string)$options['proxy_header']);
+        }
+
+        return $helper;
+    }
+
+    /**
      * @param bool $useProxy
      * @return $this
      */

@@ -3,6 +3,7 @@
 
 namespace CodeCTRL\Apollo\UI\Twig;
 
+use CodeCTRL\Apollo\Security\CSRF;
 use CodeCTRL\Apollo\Utility\Helper\Helper;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -31,7 +32,32 @@ class Extensions extends AbstractExtension
         return array(
             new TwigFunction('getBasepath', array($this, 'basepath')),
             new TwigFunction('getFileTime', array($this, 'getFilemtime')),
+            // Marked html-safe so the hidden inputs survive autoescaping.
+            new TwigFunction('csrf_field', array($this, 'csrfField'), array('is_safe' => array('html'))),
+            new TwigFunction('csrf_token', array($this, 'csrfToken')),
         );
+    }
+
+    /**
+     * Hidden CSRF inputs for a form: {{ csrf_field('login') }}
+     *
+     * @param string $formId
+     * @return string
+     */
+    public function csrfField($formId): string
+    {
+        return CSRF::field((string)$formId);
+    }
+
+    /**
+     * The bare token, for XHR callers sending it as an X-CSRF-Token header.
+     *
+     * @param string $formId
+     * @return string
+     */
+    public function csrfToken($formId): string
+    {
+        return CSRF::generateToken((string)$formId);
     }
 
     /**
