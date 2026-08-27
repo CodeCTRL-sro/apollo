@@ -9,6 +9,23 @@ Entries before 3.3.0 were not kept; see the git history for those releases.
 
 ---
 
+## [3.3.1] — 2026-08-27
+
+### Changed
+
+- **`firebase/php-jwt` widened back to `^6.11 || ^7.1`.** 3.3.0 pinned `^7.1`, which made
+  Apollo uninstallable next to `kreait/firebase-php`: the kreait releases that accept
+  php-jwt 7 (`7.24.1`, `8.2+`) require `psr/cache ^2|^3`, while Apollo's
+  `doctrine/doctrine-module ^6.3` pulls `laminas-cache 3.x`, which requires
+  `psr/cache ^1.0` — an unresolvable set. Composer still picks 7.x wherever nothing else
+  holds it back, so this is not a downgrade for most consumers; only projects with a
+  6.x-bound dependency fall back, and there they trade CVE-2025-45769
+  (GHSA-2x45-7fc3-mxwq, severity low, `<7.0.0`) for being installable at all. Apollo
+  itself only calls `JWT::encode()`, `JWT::decode()` and `Key`, whose signatures are
+  identical across 6 and 7.
+
+---
+
 ## [3.3.0] — 2026-08-27
 
 Backwards compatible with 3.2.x. Every behavioural change below either keeps the old

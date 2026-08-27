@@ -161,9 +161,12 @@ The same applies to the extensions `ext-redis`, `ext-gd`, `ext-exif`, `ext-soap`
 one is `beberlei/doctrineextensions`, referenced from the doctrine `functions` config
 dimension, and `fullpipe/twig-webpack-extension` from the twig `extensions` dimension.
 
-`firebase/php-jwt` was raised to `^7.1` (closing CVE-2025-45769). `JWT::encode()` and
-`JWT::decode()` keep the signatures Apollo uses; if you call php-jwt directly, review
-[its 7.0 release notes](https://github.com/firebase/php-jwt/releases).
+`firebase/php-jwt` is required as `^6.11 || ^7.1` (3.3.0 pinned `^7.1`; 3.3.1 widened it
+again so Apollo stays installable next to `kreait/firebase-php`, which holds php-jwt at
+6.x through `psr/cache`). Composer resolves to 7.x unless another dependency holds it
+back; on 7.x this closes CVE-2025-45769. `JWT::encode()` and `JWT::decode()` keep the
+signatures Apollo uses; if you call php-jwt directly, review [its 7.0 release
+notes](https://github.com/firebase/php-jwt/releases).
 
 ---
 
