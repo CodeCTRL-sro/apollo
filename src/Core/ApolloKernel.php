@@ -5,8 +5,8 @@ namespace CodeCTRL\Apollo\Core;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Laminas\View\Renderer\PhpRenderer;
-use League\Route\Http\Exception as HttpException;
 use CodeCTRL\Apollo\Core\Config\Config;
+use CodeCTRL\Apollo\Utility\Debug\ErrorRenderer;
 use CodeCTRL\Apollo\Http\Route\Router;
 use CodeCTRL\Apollo\UI\Form\ConfigProvider;
 use CodeCTRL\Apollo\UI\Html\Html;
@@ -24,9 +24,24 @@ class ApolloKernel implements LoggerHelperInterface
 {
     use LoggerHelperTrait;
 
+    /**
+     * The error types that leave PHP no way to continue, so the shutdown function is the
+     * last chance to produce a response.
+     */
+    private const FATAL_ERROR_TYPES = array(
+        E_ERROR,
+        E_PARSE,
+        E_CORE_ERROR,
+        E_COMPILE_ERROR,
+        E_USER_ERROR,
+        E_RECOVERABLE_ERROR,
+    );
+
     private ContainerInterface $container;
 
     private ?\Twig\Environment $twig = null;
+
+    private bool $debug = false;
 
     public function __construct(ContainerInterface $container)
     {
@@ -40,7 +55,8 @@ class ApolloKernel implements LoggerHelperInterface
             $this->setLogger($logger);
         }
 
-        $this->setLogDebug($config->get(array('route','debug'), false));
+        $this->debug = (bool)$config->get(array('route','debug'), false);
+        $this->setLogDebug($this->debug);
         $twig = null;
         try {
             $resolved = $this->container->get(Environment::class);
@@ -114,32 +130,35 @@ class ApolloKernel implements LoggerHelperInterface
     public function _fatal_handler(): void
     {
         $error = error_get_last();
-        if(isset($error['type'])){
-            switch ($error['type']) {
-                case E_ERROR:
-                case E_PARSE:
-                case E_CORE_ERROR:
-                case E_COMPILE_ERROR:
-                case E_USER_ERROR:
-                case E_RECOVERABLE_ERROR:
-                    $this->error(ServerRequest::fromGlobals()->getUri()->getPath(), $error);
-                    $exception = new HttpException(500, 'Internal Server Error');
-                    $response = new Response($exception->getStatusCode(), array(), strtok($exception->getMessage(), "\n"));
-                    $params = array(
-                        'title' => $response->getStatusCode(),
-                        'block' => array(
-                            'title' => $response->getReasonPhrase(),
-                            'content' => $response->getBody()
-                        ),
-                    );
-                    /** @var Twig $twig */
-                    $twig = $this->twig;
-                    if ($twig instanceof Environment) {
-                        $response->getBody()->write($twig->render('errors.html.twig', $params));
-                    }
-                    ob_end_clean();
-                    echo Html::response($response);
-                    break;
-            }
+
+        if (!isset($error['type']) || !in_array($error['type'], self::FATAL_ERROR_TYPES, true)) {
+            return;
         }
-    }}
+
+        $this->error(ServerRequest::fromGlobals()->getUri()->getPath(), $error);
+
+        $response = new Response(500);
+        $renderer = new ErrorRenderer($this->debug, $this->twig);
+
+        // error_get_last() gives an array, not a throwable, so build one to carry the
+        // same information into the renderer.
+        $throwable = new \ErrorException(
+            (string)($error['message'] ?? 'Fatal error'),
+            0,
+            (int)$error['type'],
+            (string)($error['file'] ?? ''),
+            (int)($error['line'] ?? 0)
+        );
+
+        $body = $renderer->renderPrettyPage($throwable)
+            ?? $renderer->renderTemplate($throwable, 500, $response->getReasonPhrase());
+
+        $response->getBody()->write($body);
+
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        Html::emit($response);
+    }
+}

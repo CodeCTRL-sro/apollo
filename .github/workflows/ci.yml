@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} / ${{ matrix.dependencies }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+        dependencies: [locked]
+        include:
+          # Catches breakage from newly released dependency versions before a consumer
+          # application hits it.
+          - php: '8.4'
+            dependencies: highest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # redis and imagick are suggests, not requirements — installed here so the
+          # code paths that use them are actually analysed rather than skipped.
+          extensions: curl, openssl, dom, hash, iconv, json, mbstring, pdo, fileinfo, intl, gd, exif, redis, imagick, soap, simplexml
+          coverage: none
+          ini-values: memory_limit=1G
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Static analysis
+        run: composer stan
+
+      - name: Tests
+        run: composer test
+
+  coding-standard:
+    name: Coding standard (advisory)
+    runs-on: ubuntu-latest
+    # Advisory on purpose: the rules in .php-cs-fixer.dist.php are configured but have
+    # not been applied to the codebase yet, so this reports the size of the pending
+    # sweep instead of failing every build until someone runs `composer cs:fix`.
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          ini-values: memory_limit=1G
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: php-cs-fixer
+        run: composer cs
+
+      - name: Rector
+        run: composer rector
+
+  security:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      # --abandoned=report so the job fails on an actual advisory, not on the abandoned
+      # packages Apollo pulls in transitively (doctrine/annotations, doctrine/cache,
+      # laminas/laminas-config, laminas/laminas-json, laminas/laminas-loader — all via
+      # doctrine/doctrine-module, none replaceable from here).
+      - name: Audit
+        run: composer audit --no-dev --abandoned=report

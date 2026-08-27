@@ -28,12 +28,43 @@ class RedisClient
     private $defaultTtl = 3600;
 
     /**
-     * @param LoggerInterface|null $logger
+     * Prepended to every key. Empty by default, so keys written by earlier releases are
+     * found unchanged; set it when several applications share one Redis database, which
+     * also keeps clearByPattern() from sweeping a neighbour's keys.
+     *
+     * @var string
      */
-    public function __construct(\Redis $redis = null, LoggerInterface $logger = null)
+    private string $prefix = '';
+
+    /**
+     * @param \Redis|null $redis
+     * @param LoggerInterface|null $logger
+     * @param string $prefix
+     */
+    public function __construct(\Redis $redis = null, LoggerInterface $logger = null, string $prefix = '')
     {
         $this->redis = $redis;
         $this->logger = $logger;
+        $this->setPrefix($prefix);
+    }
+
+    /**
+     * @param string $prefix
+     * @return $this
+     */
+    public function setPrefix(string $prefix): static
+    {
+        $this->prefix = $prefix === '' ? '' : rtrim($prefix, ':') . ':';
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
     }
 
     /**
@@ -53,7 +84,7 @@ class RedisClient
      */
     private function getKey(string $key): string
     {
-        return $key;
+        return $this->prefix . $key;
     }
 
     /**
@@ -253,15 +284,85 @@ class RedisClient
             return false;
         }
 
+        // KEYS walks the entire keyspace in one blocking pass — on a production
+        // database that is a stall for every other client on the server. SCAN does the
+        // same work in bounded slices, and UNLINK frees the memory on a background
+        // thread instead of inline.
+        $previousOption = null;
         try {
-            $keys = $this->redis->keys($this->getKey($pattern));
-            if (!empty($keys)) {
-                return (bool) $this->redis->del($keys);
+            $previousOption = $this->redis->getOption(\Redis::OPT_SCAN);
+            $this->redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY);
+
+            $iterator = null;
+            $guard = 0;
+            while (($keys = $this->redis->scan($iterator, $this->getKey($pattern), 500)) !== false) {
+                if (!empty($keys)) {
+                    $this->removeKeys($keys);
+                }
+                // SCAN_RETRY makes scan() return false once the cursor is exhausted;
+                // the counter is only a backstop against a pathological server.
+                if (++$guard > 100000) {
+                    break;
+                }
             }
+
             return true;
         } catch (\RedisException $e) {
             $this->handleError($e);
             return false;
+        } finally {
+            if ($previousOption !== null) {
+                try {
+                    $this->redis->setOption(\Redis::OPT_SCAN, $previousOption);
+                } catch (\RedisException $e) {
+                    $this->handleError($e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set or refresh a key's time to live.
+     *
+     * @param string $key
+     * @param int $ttl Seconds.
+     * @return bool
+     */
+    public function expire(string $key, int $ttl): bool
+    {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
+        try {
+            return (bool) $this->redis->expire($this->getKey($key), $ttl);
+        } catch (\RedisException $e) {
+            $this->handleError($e);
+            return false;
+        }
+    }
+
+    /**
+     * UNLINK where the server supports it (Redis 4+), DEL otherwise.
+     *
+     * @param array<int, string> $keys Already prefixed.
+     */
+    private function removeKeys(array $keys): void
+    {
+        try {
+            if (method_exists($this->redis, 'unlink')) {
+                $this->redis->unlink($keys);
+                return;
+            }
+        } catch (\RedisException $e) {
+            // Fall through to DEL: an older server reports UNLINK as an unknown command.
+            $this->handleError($e);
+        }
+
+        try {
+            $this->redis->del($keys);
+        } catch (\RedisException $e) {
+            $this->handleError($e);
         }
     }
 

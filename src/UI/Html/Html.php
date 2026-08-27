@@ -5,6 +5,7 @@ namespace CodeCTRL\Apollo\UI\Html;
 use DOMDocument;
 use GuzzleHttp\Psr7\Header;
 use InvalidArgumentException;
+use Laminas\HttpHandlerRunner\Emitter\SapiStreamEmitter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -66,20 +67,73 @@ class Html
     }
 
     /**
+     * Send a response to the client.
+     *
+     * laminas/laminas-httphandlerrunner has been a dependency all along but was never
+     * used; its emitter gets the details right that the hand rolled version here did
+     * not — Set-Cookie is sent as repeated headers instead of being folded into one
+     * comma separated line, the body is streamed in chunks rather than materialised in
+     * memory, and Content-Range is honoured.
+     *
      * @param ResponseInterface $response
-     * @return mixed The response
+     * @return bool True when the response was emitted.
+     */
+    public static function emit(ResponseInterface $response): bool
+    {
+        if (headers_sent()) {
+            // Nothing can be done about the status line at this point, but the body is
+            // still worth sending.
+            echo (string)$response->getBody();
+
+            return false;
+        }
+
+        try {
+            return (new SapiStreamEmitter())->emit($response);
+        } catch (\Throwable $e) {
+            return self::emitManually($response);
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return string Always empty; the response has already been written out.
+     * @deprecated 3.3.0 Use emit(). This used to send only the headers and hand the body
+     *             back for the caller to echo, so `echo Html::response($r)` keeps
+     *             working — but the body now goes out through the emitter and the return
+     *             value is an empty string rather than the body stream.
      */
     public static function response(ResponseInterface $response)
     {
-        header('HTTP/'
-            . $response->getProtocolVersion() . ' '
-            . $response->getStatusCode() . ' '
-            . $response->getReasonPhrase());
+        self::emit($response);
+
+        return '';
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return bool
+     */
+    private static function emitManually(ResponseInterface $response): bool
+    {
+        header(sprintf(
+            'HTTP/%s %d %s',
+            $response->getProtocolVersion(),
+            $response->getStatusCode(),
+            $response->getReasonPhrase()
+        ), true, $response->getStatusCode());
+
         foreach ($response->getHeaders() as $name => $values) {
-            header("{$name}: " . implode(', ', $values));
+            $first = strtolower($name) !== 'set-cookie';
+            foreach ($values as $value) {
+                header("{$name}: {$value}", $first);
+                $first = false;
+            }
         }
 
-        return $response->getBody();
+        echo (string)$response->getBody();
+
+        return true;
     }
 
     /**

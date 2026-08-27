@@ -1,32 +1,24 @@
+includes:
+    # Existing findings are frozen here rather than suppressed by pattern. The previous
+    # config carried blanket ignores such as '#PHPDoc tag @var#', which silenced whole
+    # categories of error across the codebase — including ones that had not been written
+    # yet. PHPStan reported most of those patterns as never matching anything at all.
+    #
+    # With a baseline, current findings stay quiet but any NEW one fails the build, and
+    # `vendor/bin/phpstan analyse --generate-baseline` shows exactly how much is left.
+    - phpstan-baseline.neon
+
 parameters:
     level: 5
+
     paths:
         - src/
-    ignoreErrors:
-        # Ignore undefined property errors from PHPDoc
-        - '#Access to an undefined property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+#'
+        - tests/
 
-        # Ignore property does not exist errors from PHPDoc
-        - message: '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+ is not readable#'
-          path: src/*
+    bootstrapFiles:
+        - phpstan-bootstrap.php
 
-        - message: '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+ is not writable#'
-          path: src/*
-
-        # Ignore missing property type declarations in PHPDoc
-        - '#PHPDoc tag @property has invalid value \([^)]+\): Unexpected token "[^"]+", expected type at offset#'
-
-        # Ignore invalid types in property PHPDoc
-        - '#PHPDoc tag @property contains unknown class#'
-
-        # Ignore mixed property types
-        - '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+ type has no value type specified in iterable type#'
-
-        # Ignore @var PHPDoc parsing errors
-        - '#PHPDoc tag @var has invalid value \([^)]+\): Unexpected token "[^"]+", expected type at offset#'
-        - '#PHPDoc tag @var#'
-        - '#Constant BASE_DIR not found#'
-
-        -
-            identifier: instanceof.alwaysTrue
-            path: src/Doctrine/*
+    # A great many properties here are documented only in @var/@property docblocks. Taking
+    # those as certain turns every such declaration into a cascade of follow-up errors
+    # about impossible comparisons.
+    treatPhpDocTypesAsCertain: false
