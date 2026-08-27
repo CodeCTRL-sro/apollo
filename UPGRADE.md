@@ -208,6 +208,48 @@ forces `Secure`) for that case.
 
 ---
 
+### 10. Explicit nullable parameters (PHP 8.4) and LF line endings
+
+Two mechanical changes that need no work from you unless the notes below apply.
+
+**Nullable parameters.** PHP 8.4 deprecates the implicit `Type $x = null`, so 24 files
+under `src/` now declare `?Type $x = null`. Calling code is unaffected — the same
+arguments are accepted as before.
+
+**Action — only if you subclass a framework class and override one of those methods.**
+PHP will not reject your override, because an implicitly nullable parameter is the same
+type; but your subclass keeps emitting its own 8.4 deprecation until you add the `?`:
+
+```php
+// your subclass, before
+protected function __construct(Config $config, EntityManagerInterface $em = null)
+// after
+protected function __construct(Config $config, ?EntityManagerInterface $em = null)
+```
+
+The classes involved are the constructors of `Auth`, `Helper`, `ApolloContainer`,
+`Router`, `ServiceProvider`, `Language`, `PdoFactory`, `RedisClient`, `RedisFactory`,
+`RouteValidator`, `APIResponseBuilder`, every middleware in `Http\Middlewares`, both HTTP
+strategies, plus `ArrayUtils::filter_recursive()`, `Config`, `ServiceManager` and the
+`FormRow` / `FormPlainText` view helpers.
+
+If you want the same treatment applied to your own code:
+
+```bash
+vendor/bin/rector process src --only=Rector\\Php84\\Rector\\Param\\ExplicitNullableParamTypeRector
+```
+
+**Line endings.** A new `.gitattributes` normalises the repository to LF
+(`* text=auto eol=lf`). A Windows checkout previously produced CRLF working copies that
+disagreed with CI about file contents, which is what made static analysis pass locally
+and fail on Linux.
+
+**Action — expect your next `git pull` or checkout to rewrite the line endings of tracked
+text files.** That shows up as a large but content-free diff if you have local changes in
+flight; commit or stash them first.
+
+---
+
 ## New in 3.3.0 you may want to adopt
 
 None of this is required.

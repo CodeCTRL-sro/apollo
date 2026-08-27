@@ -9,11 +9,13 @@ Entries before 3.3.0 were not kept; see the git history for those releases.
 
 ---
 
-## [Unreleased] — 3.3.0
+## [3.3.0] — 2026-08-27
 
 Backwards compatible with 3.2.x. Every behavioural change below either keeps the old
 path working or is opt-in; the ones worth knowing about before upgrading are collected
 in [UPGRADE.md](UPGRADE.md).
+
+Tested on PHP 8.3 and 8.4.
 
 ### Security
 
@@ -125,10 +127,38 @@ in [UPGRADE.md](UPGRADE.md).
   yet written — and PHPStan reported most of them as never matching anything. Current
   findings are frozen in the baseline; new ones fail the build.
 - **`.php-cs-fixer.dist.php` and `rector.php`** — configured but deliberately not applied
-  yet, so this release's diff stays reviewable. `composer cs` / `composer rector` show
-  what is pending.
+  as a sweep, so this release's diff stays reviewable. `composer cs` / `composer rector`
+  show what is pending. The one exception is Rector's `ExplicitNullableParamTypeRector`,
+  run on its own for the PHP 8.4 fix described under Changed.
 
 ### Changed
+
+- **Nullable parameter types are now explicit, for PHP 8.4.** PHP 8.4 deprecates the
+  implicit `Type $x = null`; 24 files under `src/` now declare `?Type $x = null`. The
+  parameters already accepted null, so behaviour and the set of accepted arguments are
+  unchanged — nothing that called these methods needs editing.
+
+  It does touch public signatures, so it is worth knowing where: the constructors of
+  `Auth`, `Helper`, `ApolloContainer`, `Router`, `ServiceProvider`, `Language`,
+  `PdoFactory`, `RedisClient`, `RedisFactory`, `RouteValidator`, `APIResponseBuilder`,
+  every middleware in `Http\Middlewares`, both HTTP strategies, plus
+  `ArrayUtils::filter_recursive()`, `Config`, `ServiceManager`, and the `FormRow` /
+  `FormPlainText` view helpers.
+
+  If your application subclasses one of these and overrides such a method, PHP will not
+  reject the override — an implicitly nullable parameter is the same type — but the
+  subclass will emit its own 8.4 deprecation until you add the `?` there too.
+
+- **Line endings are normalised to LF** through a new `.gitattributes`
+  (`* text=auto eol=lf`). A Windows checkout previously produced CRLF working copies
+  that disagreed with CI about file contents; that is what broke static analysis on
+  Linux while it passed locally. Expect your next checkout or `git pull` to rewrite the
+  line endings of tracked text files.
+
+- **PHPStan analyses against a pinned PHP range** (`phpVersion: min 80300, max 80400`)
+  rather than whatever PHP runs it, matching the `>=8.3` requirement. Without it the
+  results differed per runner — 8.4 reported 45 errors that 8.3 did not — and a single
+  baseline could not satisfy both.
 
 - `composer.json`: `cherif/inertia-psr15`, `php-curl-class/php-curl-class`,
   `doctrine/cache`, `fullpipe/twig-webpack-extension` and `beberlei/doctrineextensions`
