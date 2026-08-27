@@ -41,7 +41,7 @@ class RedisClient
      * @param LoggerInterface|null $logger
      * @param string $prefix
      */
-    public function __construct(\Redis $redis = null, LoggerInterface $logger = null, string $prefix = '')
+    public function __construct(?\Redis $redis = null, ?LoggerInterface $logger = null, string $prefix = '')
     {
         $this->redis = $redis;
         $this->logger = $logger;

@@ -53,7 +53,7 @@ class ArrayUtils
      * @param int $flag
      * @return array
      */
-    public static function filter_recursive(array $array, callable $callback = null, $flag = 0)
+    public static function filter_recursive(array $array, ?callable $callback = null, $flag = 0)
     {
         foreach ($array as $index => $value) {
             if (is_array($value)) {

@@ -70,7 +70,7 @@ class Helper implements LoggerHelperInterface
      * @param EntityManagerInterface|null $entityManager
      * @param LoggerInterface|null $logger
      */
-    public function __construct(Config $config, Auth $auth, EntityManagerInterface $entityManager = null, LoggerInterface $logger = null)
+    public function __construct(Config $config, Auth $auth, ?EntityManagerInterface $entityManager = null, ?LoggerInterface $logger = null)
     {
         $this->entityManager = $entityManager;
         $this->auth = $auth;

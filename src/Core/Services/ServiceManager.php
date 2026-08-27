@@ -27,7 +27,10 @@ class ServiceManager implements ContainerInterface, ContainerAwareInterface
     protected $configDimensions = array();
 
     /**
-     * @var
+     * Built services, keyed by alias and then by a hash of the configuration they were
+     * built from, so a changed config yields a new instance rather than a stale one.
+     *
+     * @var array<string, array<string, mixed>>|null
      */
     private $cache;
 

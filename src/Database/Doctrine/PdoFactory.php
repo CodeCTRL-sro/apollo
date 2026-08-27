@@ -36,7 +36,7 @@ class PdoFactory implements InvokableFactoryInterface, ConfigurableFactoryInterf
      * @param LoggerInterface|null $logger
      * @return PDO
      */
-    public function createPDO(LoggerInterface $logger = null)
+    public function createPDO(?LoggerInterface $logger = null)
     {
         $db_user = $this->config->get('db_user');
         $db_pass = $this->config->get('db_pass');

@@ -55,9 +55,9 @@ class Router extends \League\Route\Router implements LoggerHelperInterface, Conf
      *
      * @param \Psr\Container\ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container = null,
-                                RouteParser        $parser    = null,
-                                DataGenerator      $generator = null) {
+    public function __construct(?ContainerInterface $container = null,
+                                ?RouteParser        $parser    = null,
+                                ?DataGenerator      $generator = null) {
         $this->container = ($container instanceof ContainerInterface) ? $container : new Container;
         $parser    = ($parser instanceof RouteParser) ? $parser : new RouteParser\Std();
         $generator = ($generator instanceof DataGenerator) ? $generator : new DataGenerator\GroupCountBased();

@@ -51,7 +51,7 @@ class PermissionMiddleware implements MiddlewareInterface
      *        the requests that never reach it.
      * @param EntityManagerInterface|null $em
      */
-    public function __construct($options, Config $config, $userSource, EntityManagerInterface $em = null)
+    public function __construct($options, Config $config, $userSource, ?EntityManagerInterface $em = null)
     {
         $this->options = $options;
         $this->auth = new Auth($config, $em);

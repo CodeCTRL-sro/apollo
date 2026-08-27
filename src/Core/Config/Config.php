@@ -21,7 +21,7 @@ class Config
      * @param array $config
      * @param array|string|bool|null $base
      */
-    final public function __construct(array $config = array(), array|string|bool $base = null)
+    final public function __construct(array $config = array(), array|string|bool|null $base = null)
     {
         $this->config = $config;
         $this->setBase($base);
@@ -42,7 +42,7 @@ class Config
      * @param array|string|bool|null $default
      * @return array|string|bool|null
      */
-    public function get(array|string|bool $dimensionNames = null, array|string|bool $default = null): array|string|bool|null
+    public function get(array|string|bool|null $dimensionNames = null, array|string|bool|null $default = null): array|string|bool|null
     {
         $config = $this->_get($this->_keys($dimensionNames), $this->config);
         return is_null($config) ? $default : $config;
@@ -53,7 +53,7 @@ class Config
      * @param array|string|bool|null $value
      * @return $this
      */
-    public function set(array|string|bool $dimensionNames = null, array|string|bool $value = null): static
+    public function set(array|string|bool|null $dimensionNames = null, array|string|bool|null $value = null): static
     {
         $this->_set($this->_keys($dimensionNames), $value);
         return $this;
@@ -63,7 +63,7 @@ class Config
      * @param array|string|bool|null $dimensionNames
      * @return self
      */
-    public function fromDimension(array|string|bool $dimensionNames = null): self
+    public function fromDimension(array|string|bool|null $dimensionNames = null): self
     {
         $config = $this->_get($this->_keys($dimensionNames), $this->config);
         return new self((array)$config);
@@ -73,7 +73,7 @@ class Config
      * @param array|string|bool|null $dimensionNames
      * @return array
      */
-    private function _keys(array|string|bool $dimensionNames = null): array
+    private function _keys(array|string|bool|null $dimensionNames = null): array
     {
         if (!is_null($dimensionNames) && !is_array($dimensionNames)) {
             $dimensionNames = array($dimensionNames);
@@ -109,7 +109,7 @@ class Config
      * @param array|null $config
      * @return array|string|bool|null
      */
-    private function _get(array $keys = array(), array $config = null): array|string|bool|null
+    private function _get(array $keys = array(), ?array $config = null): array|string|bool|null
     {
         foreach ($keys as $key) {
             if (is_array($config) && array_key_exists($key, $config)) {
@@ -125,7 +125,7 @@ class Config
      * @param array $keys
      * @param array|string|bool|null $value
      */
-    private function _set(array $keys, array|string|bool $value = null): void
+    private function _set(array $keys, array|string|bool|null $value = null): void
     {
         $cfg = &$this->config;
         $last = array_key_last($keys);
@@ -148,7 +148,7 @@ class Config
      * @param array|string|bool|null $base
      * @return $this
      */
-    public function setBase(array|string|bool $base = null): static
+    public function setBase(array|string|bool|null $base = null): static
     {
         if (!is_null($base) && !is_array($base)) {
             $base = array($base);

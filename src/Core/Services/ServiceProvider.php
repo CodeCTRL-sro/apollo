@@ -33,7 +33,7 @@ class ServiceProvider extends AbstractServiceProvider implements BootableService
     protected $request;
 
 
-    public function __construct(Config $config, ServerRequestInterface $request = null)
+    public function __construct(Config $config, ?ServerRequestInterface $request = null)
     {
         $this->config = $config;
         if (!$request) {

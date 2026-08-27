@@ -35,7 +35,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
     protected $entityManager;
 
 
-    public function __construct($options, Config $config, EntityManagerInterface $em = null)
+    public function __construct($options, Config $config, ?EntityManagerInterface $em = null)
     {
         $this->options = $options;
         $this->auth = new Auth($config, $em);

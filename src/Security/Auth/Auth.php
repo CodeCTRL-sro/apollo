@@ -27,7 +27,7 @@ class Auth
      * @param EntityManagerInterface|null $entityManager
      * @param Config $config
      */
-    public function __construct(Config $config, EntityManagerInterface $entityManager = null)
+    public function __construct(Config $config, ?EntityManagerInterface $entityManager = null)
     {
         $this->config = $config;
         $this->entityManager = $entityManager;

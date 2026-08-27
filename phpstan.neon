@@ -11,6 +11,14 @@ includes:
 parameters:
     level: 5
 
+    # Analyse against the whole supported range rather than whatever PHP happens to be
+    # running. Without this the result depends on the runner: on 8.4 PHPStan reported 45
+    # implicitly-nullable-parameter errors that 8.3 did not, so a baseline generated on
+    # one version failed on the other. composer.json requires >=8.3.
+    phpVersion:
+        min: 80300
+        max: 80400
+
     paths:
         - src/
         - tests/

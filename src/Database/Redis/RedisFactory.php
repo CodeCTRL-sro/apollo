@@ -68,7 +68,7 @@ class RedisFactory implements InvokableFactoryInterface, ConfigurableFactoryInte
      * @param LoggerInterface|null $logger
      * @return \Redis|null
      */
-    public function createInstance(LoggerInterface $logger = null)
+    public function createInstance(?LoggerInterface $logger = null)
     {
         if (!class_exists('\Redis')) {
             if ($logger instanceof LoggerInterface) {

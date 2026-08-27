@@ -56,10 +56,6 @@ jobs:
   coding-standard:
     name: Coding standard (advisory)
     runs-on: ubuntu-latest
-    # Advisory on purpose: the rules in .php-cs-fixer.dist.php are configured but have
-    # not been applied to the codebase yet, so this reports the size of the pending
-    # sweep instead of failing every build until someone runs `composer cs:fix`.
-    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4
@@ -74,10 +70,19 @@ jobs:
       - name: Install dependencies
         uses: ramsey/composer-install@v3
 
-      - name: php-cs-fixer
+      # Advisory on purpose. The rules in .php-cs-fixer.dist.php and rector.php are
+      # configured but have not been applied to the codebase yet, so both tools report a
+      # non-zero exit until someone runs the sweep. continue-on-error is set per step
+      # rather than per job: the step is marked with a warning and the job still ends
+      # green, but a genuine failure earlier on (checkout, PHP setup, composer install)
+      # still fails the job. Per-step also means Rector runs even though php-cs-fixer
+      # exited non-zero - with the job-level flag it was skipped entirely.
+      - name: php-cs-fixer (pending sweep, advisory)
+        continue-on-error: true
         run: composer cs
 
-      - name: Rector
+      - name: Rector (pending sweep, advisory)
+        continue-on-error: true
         run: composer rector
 
   security:

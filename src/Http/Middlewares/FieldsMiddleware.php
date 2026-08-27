@@ -40,7 +40,7 @@ class FieldsMiddleware implements MiddlewareInterface
     protected $container;
 
 
-    public function __construct($options, Config $config, Container $container, EntityManagerInterface $em = null)
+    public function __construct($options, Config $config, Container $container, ?EntityManagerInterface $em = null)
     {
         $this->options = $options;
         $this->auth = new Auth($config, $em);

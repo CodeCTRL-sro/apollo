@@ -14,7 +14,7 @@ class FormPlainText extends AbstractHelper
         return $element->getValue();
     }
 
-    public function __invoke(ElementInterface $element = null)
+    public function __invoke(?ElementInterface $element = null)
     {
         return $this->render($element);
     }

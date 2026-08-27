@@ -17,7 +17,7 @@ class FormRow extends BaseFormRow
     protected $hintClass = 'form-text';
 
     public function __invoke(
-        ElementInterface $element = null,
+        ?ElementInterface $element = null,
         $labelPosition = null,
         $renderErrors = null,
         $partial = null

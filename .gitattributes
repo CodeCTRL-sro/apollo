@@ -1,0 +1,27 @@
+# Normalise line endings.
+#
+# The repository stores LF, but a Windows checkout converted everything to CRLF, so the
+# working tree and CI disagreed about file contents. That is not cosmetic: PHPStan bakes
+# the offending text into its baseline messages, so a baseline generated on Windows
+# contained `Unexpected token "\r\n ", ... at offset 16` while CI reported `"\n "` at
+# offset 15 — the patterns stopped matching and static analysis failed on CI only.
+#
+# eol=lf makes every checkout agree with what CI sees.
+
+* text=auto eol=lf
+
+# Binary files must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.phar binary

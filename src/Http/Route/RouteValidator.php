@@ -58,7 +58,7 @@ class RouteValidator implements RouteValidatorInterface
      * @param Auth $auth
      * @param EntityManagerInterface|null $entityManager
      */
-    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, EntityManagerInterface $entityManager = null)
+    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, ?EntityManagerInterface $entityManager = null)
     {
         $this->config = $config;
         $this->twig = $twig;

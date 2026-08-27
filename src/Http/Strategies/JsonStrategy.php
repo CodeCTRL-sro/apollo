@@ -53,7 +53,7 @@ class JsonStrategy extends ApplicationStrategy implements LoggerHelperInterface
      * @param Config|null $config Supplies route.debug; optional so the previous
      *                            three-argument construction keeps working.
      */
-    public function __construct(Environment $twig, Router $router, LoggerInterface $logger = null, Config $config = null)
+    public function __construct(Environment $twig, Router $router, ?LoggerInterface $logger = null, ?Config $config = null)
     {
         $this->twig = $twig;
         $this->router = $router;

@@ -28,7 +28,7 @@ class APIResponseBuilder
      * @param string|null $message
      * @param array $data
      */
-    public function __construct(int $status = 200, string $message = null, array $data = array())
+    public function __construct(int $status = 200, ?string $message = null, array $data = array())
     {
         $this->status = $status;
         $this->message = $message;
@@ -123,7 +123,7 @@ class APIResponseBuilder
      * @param array $data
      * @return ResponseInterface
      */
-    public static function staticBuild(ResponseInterface $response, int $status = 200, string $message = null, array $data = array()): ResponseInterface
+    public static function staticBuild(ResponseInterface $response, int $status = 200, ?string $message = null, array $data = array()): ResponseInterface
     {
         $builder = new self($status, $message, $data);
         $response->getBody()->write($builder->build());

@@ -24,11 +24,12 @@ class ApolloContainer implements LoggerHelperInterface
     use LoggerHelperTrait;
 
     /**
-     * @var
+     * @var string
      */
     protected static string $NAME;
+
     /**
-     * @var
+     * @var string
      */
     protected static string $URL;
 
@@ -88,7 +89,7 @@ class ApolloContainer implements LoggerHelperInterface
      * @param \Redis|null $redisInstance
      * @param ServiceManager|null $serviceManager
      */
-    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, EntityManagerInterface $entityManager = null, LoggerInterface $logger = null, \Redis $redisInstance = null, ServiceManager $serviceManager = null)
+    public function __construct(Config $config, Environment $twig, Helper $helper, Auth $auth, ?EntityManagerInterface $entityManager = null, ?LoggerInterface $logger = null, ?\Redis $redisInstance = null, ?ServiceManager $serviceManager = null)
     {
         $this->config = $config->fromDimension(array('route','modules'));
         $this->twig = $twig;

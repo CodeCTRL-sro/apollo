@@ -27,7 +27,7 @@ class Language extends ApolloContainer
     protected $request;
     protected string|null $app_language_version = null;
 
-    public function __construct(ServerRequestInterface $request, Config $config, Environment $twig, Helper $helper, Auth $auth, EntityManagerInterface $entityManager = null, LoggerInterface $logger = null)
+    public function __construct(ServerRequestInterface $request, Config $config, Environment $twig, Helper $helper, Auth $auth, ?EntityManagerInterface $entityManager = null, ?LoggerInterface $logger = null)
     {
         $this->request = $request;
         $this->languages = array();
@@ -198,7 +198,7 @@ class Language extends ApolloContainer
      * @param ServerRequestInterface $request
      * @return self
      */
-    protected function loadMultiModule($class, ServerRequestInterface $request = null)
+    protected function loadMultiModule($class, ?ServerRequestInterface $request = null)
     {
         try {
             $reflector = new ReflectionClass($class);

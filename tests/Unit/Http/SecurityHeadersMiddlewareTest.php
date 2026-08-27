@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 #[CoversClass(SecurityHeadersMiddleware::class)]
 final class SecurityHeadersMiddlewareTest extends TestCase
 {
-    private function handler(ResponseInterface $response = null): RequestHandlerInterface
+    private function handler(?ResponseInterface $response = null): RequestHandlerInterface
     {
         $response ??= new Response();
 
