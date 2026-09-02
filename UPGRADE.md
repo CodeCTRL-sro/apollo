@@ -151,15 +151,20 @@ These moved from `require` to `suggest` because `src/` never referenced them:
 | `cherif/inertia-psr15` | `composer require cherif/inertia-psr15` |
 | `php-curl-class/php-curl-class` | `composer require php-curl-class/php-curl-class` |
 | `doctrine/cache` | `composer require doctrine/cache` (or move to PSR-6) |
-| `fullpipe/twig-webpack-extension` | `composer require fullpipe/twig-webpack-extension` |
-| `beberlei/doctrineextensions` | `composer require beberlei/doctrineextensions` |
 
 The same applies to the extensions `ext-redis`, `ext-gd`, `ext-exif`, `ext-soap` and
-`ext-simplexml`.
+`ext-simplexml`. Moving an extension to `suggest` only stops Composer verifying it; a
+server that already has it loaded is unaffected.
 
-**Action — run `composer update` and check for a missing class at boot.** The most likely
-one is `beberlei/doctrineextensions`, referenced from the doctrine `functions` config
-dimension, and `fullpipe/twig-webpack-extension` from the twig `extensions` dimension.
+> **Corrected in 3.3.2.** `beberlei/doctrineextensions` and
+> `fullpipe/twig-webpack-extension` were moved to `suggest` in 3.3.0 and are back in
+> `require` as of 3.3.2. They should never have been moved: Apollo consumes them as
+> *config strings*, not imports — the class names live in your application's doctrine
+> `functions` and twig `extensions` config, so the "not referenced from `src/`" check
+> that justified the move could not see them. In 3.3.0 and 3.3.1 this removed the
+> package, and DQL functions such as `NOW()`, `DATE_FORMAT()` and `GROUP_CONCAT()`
+> stopped resolving in the query builder. Upgrading to 3.3.2 restores them with no
+> change on your side.
 
 `firebase/php-jwt` is required as `^6.11 || ^7.1` (3.3.0 pinned `^7.1`; 3.3.1 widened it
 again so Apollo stays installable next to `kreait/firebase-php`, which holds php-jwt at

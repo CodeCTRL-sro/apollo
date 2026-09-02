@@ -9,6 +9,29 @@ Entries before 3.3.0 were not kept; see the git history for those releases.
 
 ---
 
+## [3.3.2] — 2026-08-27
+
+### Fixed
+
+- **`beberlei/doctrineextensions` and `fullpipe/twig-webpack-extension` are back in
+  `require`.** 3.3.0 moved both to `suggest`, which removed them on the next
+  `composer update` and broke every DQL function an application had registered:
+  `NOW()`, `DATE_FORMAT()`, `GROUP_CONCAT()` and the rest stopped resolving in the query
+  builder. The Twig webpack helpers went the same way.
+
+  The move was justified by "not referenced from `src/`", and that check was the wrong
+  instrument. Apollo consumes both packages as **config strings**, not imports:
+  `DoctrineFactory::addFunctions()` reads the doctrine `functions` dimension and
+  `TwigFactory` reads the twig `extensions` dimension, and the class names in those
+  dimensions live in the *application's* config files. No search for `use` statements in
+  `src/` can see a dependency of that shape.
+
+  Restoring them requires no change on the consumer side. The remaining `suggest`
+  entries — `cherif/inertia-psr15`, `php-curl-class/php-curl-class`, `doctrine/cache`
+  and the optional extensions — are genuinely unused by the framework and stay there.
+
+---
+
 ## [3.3.1] — 2026-08-27
 
 ### Changed
@@ -177,12 +200,13 @@ Tested on PHP 8.3 and 8.4.
   results differed per runner — 8.4 reported 45 errors that 8.3 did not — and a single
   baseline could not satisfy both.
 
-- `composer.json`: `cherif/inertia-psr15`, `php-curl-class/php-curl-class`,
-  `doctrine/cache`, `fullpipe/twig-webpack-extension` and `beberlei/doctrineextensions`
-  moved from `require` to `suggest` — none of them is referenced from `src/`, and a
-  library should not choose them for its consumers. `ext-redis`, `ext-gd`, `ext-exif`,
-  `ext-soap` and `ext-simplexml` moved to `suggest` for the same reason; a JSON-only
-  application could not be installed without them before.
+- `composer.json`: `cherif/inertia-psr15`, `php-curl-class/php-curl-class` and
+  `doctrine/cache` moved from `require` to `suggest` — none of them is referenced from
+  `src/`, and a library should not choose them for its consumers. `ext-redis`, `ext-gd`,
+  `ext-exif`, `ext-soap` and `ext-simplexml` moved to `suggest` for the same reason; a
+  JSON-only application could not be installed without them before.
+  (`fullpipe/twig-webpack-extension` and `beberlei/doctrineextensions` were moved too,
+  which was a mistake — see 3.3.2.)
 - `gedmo/doctrine-extensions` unpinned from the exact version `3.19` to `^3.19`, so
   patch releases can be picked up.
 - `Html::response()` is deprecated in favour of `Html::emit()`. It still sends the

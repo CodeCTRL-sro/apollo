@@ -46,6 +46,8 @@
         "guzzlehttp/psr7": "^2.7",
         "guzzlehttp/guzzle": "^7.9",
         "twig/twig": "^3.20",
+        "beberlei/doctrineextensions": "^1.5",
+        "fullpipe/twig-webpack-extension": "^4.0",
         "firebase/php-jwt": "^6.11 || ^7.1",
         "phpmailer/phpmailer": "^6.9",
         "voku/anti-xss": "^4.1",
@@ -71,8 +73,6 @@
         "filp/whoops": "Pretty, interactive error page in debug mode (see CodeCTRL\\Apollo\\Utility\\Debug\\WhoopsRenderer).",
         "doctrine/migrations": "Forward schema management instead of generating entities from an existing database.",
         "cherif/inertia-psr15": "Inertia.js adapter, if your application renders Inertia responses.",
-        "beberlei/doctrineextensions": "Extra DQL functions; register them through the doctrine `functions` config dimension.",
-        "fullpipe/twig-webpack-extension": "Webpack asset helpers for Twig; register it through the twig `extensions` config dimension.",
         "php-curl-class/php-curl-class": "Alternative HTTP client, if you prefer it over Guzzle in your application."
     },
     "minimum-stability": "stable",
